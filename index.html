@@ -9,17 +9,18 @@
 :root{--bg:#f6f7f9;--card:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--primary:#111827;--danger:#b91c1c;--success:#166534;--warning:#92400e;--shadow:0 8px 28px rgba(15,23,42,.06)}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text)}
 header{padding:22px 16px 10px;max-width:960px;margin:auto}
-h1{font-size:24px;margin:0 0 6px}
+h1{font-size:25px;margin:0 0 8px;letter-spacing:-.02em}
 h2{font-size:20px;margin:0 0 12px}
 h3{margin:0 0 12px}
 p{line-height:1.7}
 .muted{color:var(--muted);margin:0}
 .tabs{display:flex;gap:8px;overflow-x:auto;padding:8px 16px 14px;max-width:960px;margin:auto}
-button,.tab{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 13px;font-size:15px;white-space:nowrap}
+button,.tab{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 13px;font-size:15px;white-space:nowrap;cursor:pointer}
 .tab.active,.primary{background:var(--primary);color:#fff}
 .success{color:var(--success);border-color:#bbf7d0}
 .warning{color:var(--warning);border-color:#fde68a}
 .danger{color:var(--danger);border-color:#fecaca}
+.secondary{background:#f9fafb}
 main{max-width:960px;margin:auto;padding:0 16px 28px}
 .page{display:none}
 .page.active{display:block}
@@ -28,7 +29,7 @@ main{max-width:960px;margin:auto;padding:0 16px 28px}
 .stat span{display:block;color:var(--muted)}
 .stat strong{font-size:28px;display:block;margin-top:8px}
 label{display:grid;gap:7px;font-weight:600;margin-bottom:12px}
-input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;font:inherit;background:#fff}
+input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;font:inherit;background:#fff;color:var(--text)}
 textarea{min-height:110px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
@@ -44,14 +45,42 @@ textarea{min-height:110px;resize:vertical}
 .answer{background:#f9fafb;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px}
 .code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:220px}
 .notice{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.preview-box{max-height:360px;overflow:auto;border:1px solid var(--border);border-radius:14px;background:#fff}
+.preview-row{padding:12px;border-bottom:1px solid var(--border)}
+.preview-row:last-child{border-bottom:0}
+.format-example{background:#f9fafb;border:1px solid var(--border);border-radius:14px;padding:12px;white-space:pre-wrap;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6}
 footer{max-width:960px;margin:auto;padding:0 16px 24px;color:var(--muted);font-size:13px}
-@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}.toolbar{display:grid}.toolbar input{max-width:none}.item-head{display:grid}}
+
+/* 专注模式 */
+.focus-overlay{position:fixed;inset:0;background:#f8fafc;z-index:9999;display:none;flex-direction:column}
+.focus-overlay.active{display:flex}
+.focus-top{height:58px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:#fff}
+.focus-top button{border:0;background:transparent;font-size:17px;padding:8px 10px}
+.focus-progress{font-size:14px;color:var(--muted)}
+.focus-main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:18px;max-width:860px;width:100%;margin:0 auto}
+.focus-question{font-size:28px;line-height:1.45;font-weight:800;letter-spacing:-.02em}
+.focus-input{min-height:150px;font-size:20px;line-height:1.55}
+.focus-answer{font-size:18px;line-height:1.6}
+.focus-grade{display:flex;gap:8px;flex-wrap:wrap}
+.focus-bottom{padding:12px 16px;border-top:1px solid var(--border);background:#fff;display:flex;gap:10px}
+.focus-bottom button{flex:1;font-size:18px;padding:14px 16px}
+@media(max-width:720px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:1fr}
+  .toolbar{display:grid}.toolbar input{max-width:none}.item-head{display:grid}
+  button,.tab{font-size:16px;padding:11px 14px}
+  h1{font-size:26px}
+  .focus-question{font-size:30px}
+  .focus-main{justify-content:flex-start;padding-top:48px}
+}
 </style>
 </head>
 <body>
 <header>
   <h1>英语训练本地工作台</h1>
-  <p class="muted">单文件版 · 不用 GitHub · 不用 Lovable Cloud · 题库/训练/错题/备份</p>
+  <p class="muted">v0.3 · 文本导入/导出 · 专注训练模式 · 数据存在当前浏览器本地</p>
 </header>
 
 <nav class="tabs">
@@ -59,7 +88,7 @@ footer{max-width:960px;margin:auto;padding:0 16px 24px;color:var(--muted);font-s
   <button class="tab" data-page="library">题库</button>
   <button class="tab" data-page="training">训练</button>
   <button class="tab" data-page="mistakes">错题本</button>
-  <button class="tab" data-page="backup">备份</button>
+  <button class="tab" data-page="backup">导入导出</button>
   <button class="tab" data-page="settings">设置</button>
 </nav>
 
@@ -73,12 +102,16 @@ footer{max-width:960px;margin:auto;padding:0 16px 24px;color:var(--muted);font-s
   </div>
   <div class="card">
     <h2>今日训练</h2>
-    <p class="muted">先不搞复杂系统。先做到：能录题、能练、能记录错题、能导出备份。</p>
-    <div class="actions"><button class="primary" onclick="switchPage('training')">开始训练</button><button onclick="loadSamples()">载入示例题</button></div>
+    <p class="muted">训练记录会保存在当前浏览器本地。iPhone、iPad、Windows 默认不会自动同步。</p>
+    <div class="actions">
+      <button class="primary" onclick="switchPage('training')">开始训练</button>
+      <button onclick="startFocusMode()">进入专注训练</button>
+      <button onclick="switchPage('backup')">批量导入</button>
+    </div>
   </div>
   <div class="card notice">
-    <h2>重要提醒</h2>
-    <p>这是手机本地工具。数据主要保存在当前浏览器里。为了避免丢失，请定期到「备份」里导出 JSON。</p>
+    <h2>多设备提醒</h2>
+    <p>当前是本地工具：iPhone Safari、iPad Safari、Windows 浏览器会各自保存一份数据。想统一数据，需要手动导出文本/完整备份，再导入到另一台设备。</p>
   </div>
 </section>
 
@@ -106,7 +139,10 @@ footer{max-width:960px;margin:auto;padding:0 16px 24px;color:var(--muted);font-s
       <h2>中译英训练</h2>
       <select id="mode" onchange="prepareTraining()"><option value="due">优先复习</option><option value="all">全部题库</option><option value="mistakes">错题优先</option></select>
     </div>
-    <div id="noTraining" class="empty">暂无可训练题目。先去「题库」新增，或在「备份」里导入 JSON。</div>
+    <div class="actions" style="margin-bottom:12px">
+      <button class="primary" onclick="startFocusMode()">进入专注训练</button>
+    </div>
+    <div id="noTraining" class="empty">暂无可训练题目。先去「题库」新增，或在「导入导出」里批量导入。</div>
     <div id="trainBox" class="hidden">
       <div class="badges"><span class="badge" id="trainType"></span><span class="badge" id="trainStage"></span><span class="badge" id="trainCount"></span></div>
       <h3 id="trainQ"></h3>
@@ -137,23 +173,50 @@ footer{max-width:960px;margin:auto;padding:0 16px 24px;color:var(--muted);font-s
 
 <section id="backup" class="page">
   <div class="card">
-    <h2>导出备份</h2>
-    <p class="muted">建议经常导出 JSON。这个文件就是你的学习资产备份。</p>
-    <div class="actions"><button onclick="exportJSON()">导出 JSON</button><button onclick="exportCSV()">导出 CSV</button></div>
+    <h2>批量文本导入</h2>
+    <p class="muted">不用 JSON。推荐格式：一行一道题，用 <strong>||</strong> 分隔。</p>
+    <div class="format-example">我需要注意这个问题。 || I need to pay attention to this problem. || 中译英 || 第18课 || need to do
+你应该完成你的作业。 || You should finish your homework. || 中译英 || 第16课 || should + 动词原形
+
+也支持两行一组：
+我需要注意这个问题。
+I need to pay attention to this problem.
+
+你应该完成你的作业。
+You should finish your homework.</div>
+    <label style="margin-top:12px">粘贴题库文本
+      <textarea id="importText" class="code" placeholder="把题库文本粘贴到这里。"></textarea>
+    </label>
+    <div class="actions">
+      <button class="secondary" onclick="previewTextImport()">预览识别</button>
+      <button id="confirmImportBtn" class="primary" onclick="confirmTextImport()" disabled>确认导入</button>
+      <button onclick="clearImportBox()">清空输入框</button>
+    </div>
+    <div id="importStatus" class="card hidden" style="box-shadow:none;margin-top:12px"></div>
+    <div id="previewBox" class="preview-box hidden"></div>
   </div>
+
   <div class="card">
-    <h2>导入 JSON</h2>
-    <p class="muted">支持导入之前导出的备份，也支持导入题目数组。</p>
-    <textarea id="importText" class="code" placeholder='[
-  {
-    "question": "我需要注意这个问题。",
-    "answer": "I need to pay attention to this problem.",
-    "type": "中译英",
-    "stage": "第18课",
-    "note": "need to do"
-  }
-]'></textarea>
-    <button class="primary" onclick="importJSON()">导入</button>
+    <h2>文本导出</h2>
+    <p class="muted">导出题库为普通文本。可复制到 iPhone、iPad、Windows 任意设备再导入。</p>
+    <div class="actions">
+      <button onclick="copyTextExport()">复制题库文本</button>
+      <button onclick="downloadTextExport()">下载题库 TXT</button>
+      <button onclick="downloadFullBackup()">下载完整备份</button>
+      <button onclick="downloadCSV()">下载 CSV</button>
+    </div>
+    <label style="margin-top:12px">当前题库文本
+      <textarea id="exportText" class="code" readonly></textarea>
+    </label>
+  </div>
+
+  <div class="card">
+    <h2>完整备份导入</h2>
+    <p class="muted">用于迁移训练记录、错题次数、复习时间。平时只导入题库文本即可；换设备时用完整备份。</p>
+    <label>粘贴完整备份文本
+      <textarea id="fullBackupText" class="code" placeholder="把完整备份文本粘贴到这里。"></textarea>
+    </label>
+    <button class="primary" onclick="importFullBackup()">导入完整备份</button>
   </div>
 </section>
 
@@ -165,59 +228,119 @@ footer{max-width:960px;margin:auto;padding:0 16px 24px;color:var(--muted);font-s
     <button class="primary" onclick="saveSettings()">保存设置</button>
   </div>
   <div class="card">
-    <h2>如何在 iPhone 使用</h2>
-    <p>最简单方式：在「文件」App 里点开这个 HTML 文件。如果只是显示代码，长按文件 → 分享 → 用 Safari 打开。</p>
-    <p class="muted">如果 Safari 本地打开不稳定，后续再考虑免费网页托管。现在先别碰 GitHub。</p>
+    <h2>数据保存说明</h2>
+    <p>题库、错题次数、训练记录都保存在当前浏览器的 localStorage 中。它不是云同步。</p>
   </div>
 </section>
 </main>
 
-<footer>English Drill Local Single File v0.1</footer>
+<footer>English Drill Local v0.3 · Focus Mode</footer>
+
+<div id="focusOverlay" class="focus-overlay">
+  <div class="focus-top">
+    <button onclick="exitFocusMode()">返回</button>
+    <span id="focusProgress" class="focus-progress">0 / 0</span>
+    <button onclick="focusNext()">下一题</button>
+  </div>
+  <div class="focus-main">
+    <div class="badges"><span class="badge" id="focusType"></span><span class="badge" id="focusStage"></span></div>
+    <div id="focusQuestion" class="focus-question"></div>
+    <textarea id="focusUserAnswer" class="focus-input" placeholder="输入你的英文答案"></textarea>
+    <div class="actions">
+      <button onclick="focusShowAnswer()">查看答案 / 判题</button>
+    </div>
+    <div id="focusAnswerBox" class="answer hidden">
+      <div class="focus-answer">
+        <strong>参考答案</strong>
+        <p id="focusAnswer"></p>
+        <strong>你的答案</strong>
+        <p id="focusYourAnswer"></p>
+      </div>
+      <div class="focus-grade">
+        <button class="success" onclick="focusMark('correct')">正确</button>
+        <button class="warning" onclick="focusMark('partial')">部分正确</button>
+        <button class="danger" onclick="focusMark('wrong')">错误</button>
+        <button onclick="focusMark('skip')">跳过</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 const KEY="english_drill_single_v01";
 let state={items:[],records:[],settings:{dailyTarget:10,defaultStage:""}};
-let queue=[];let idx=0;
+let queue=[];let idx=0;let pendingImportItems=[];
 
 function load(){
-  try{const raw=localStorage.getItem(KEY);if(raw)state=JSON.parse(raw)}catch(e){alert("本地存储读取失败。你仍然可以导入/导出 JSON 使用。")}
+  try{const raw=localStorage.getItem(KEY);if(raw)state=JSON.parse(raw)}catch(e){alert("本地存储读取失败。你仍然可以导入/导出题库文本。")}
+  state.items=Array.isArray(state.items)?state.items:[];
+  state.records=Array.isArray(state.records)?state.records:[];
+  state.settings=state.settings||{dailyTarget:10,defaultStage:""};
   document.getElementById("dailyTarget").value=state.settings.dailyTarget||10;
   document.getElementById("defaultStage").value=state.settings.defaultStage||"";
   render();
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){alert("本地保存失败，请先导出 JSON 备份。")}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){alert("本地保存失败，请先导出题库文本备份。")}}
 function uid(){return "id_"+Date.now()+"_"+Math.random().toString(16).slice(2)}
 function now(){return new Date().toISOString()}
 function today(){return now().slice(0,10)}
 function days(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString()}
 function esc(s){return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function switchPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));document.getElementById(id).classList.add("active");let tab=document.querySelector(`.tab[data-page="${id}"]`);if(tab)tab.classList.add("active");if(id==="training")prepareTraining()}
+function switchPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  let tab=document.querySelector(`.tab[data-page="${id}"]`);
+  if(tab)tab.classList.add("active");
+  if(id==="training")prepareTraining();
+  if(id==="backup")refreshExportText();
+}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchPage(b.dataset.page));
 
+function normalizeItem(raw){
+  return {
+    id:raw.id||uid(),
+    question:String(raw.question||raw.q||raw.zh||raw.chinese||"").trim(),
+    answer:String(raw.answer||raw.a||raw.en||raw.english||"").trim(),
+    type:String(raw.type||"中译英").trim()||"中译英",
+    stage:String(raw.stage||state.settings.defaultStage||"").trim(),
+    note:String(raw.note||raw.notes||raw.remark||"").trim(),
+    wrongCount:Number(raw.wrongCount||0),
+    partialCount:Number(raw.partialCount||0),
+    correctCount:Number(raw.correctCount||0),
+    lastReviewedAt:raw.lastReviewedAt||null,
+    nextReviewAt:raw.nextReviewAt||now(),
+    createdAt:raw.createdAt||now(),
+    updatedAt:now()
+  }
+}
 function addItem(raw){
-  const item={id:uid(),question:(raw.question||"").trim(),answer:(raw.answer||"").trim(),type:raw.type||"中译英",stage:raw.stage||state.settings.defaultStage||"",note:raw.note||"",wrongCount:0,partialCount:0,correctCount:0,lastReviewedAt:null,nextReviewAt:now(),createdAt:now(),updatedAt:now()};
-  if(!item.question||!item.answer){alert("中文题目和英文答案都要填。");return}
-  state.items.push(item);save();render()
+  const item=normalizeItem(raw);
+  if(!item.question||!item.answer){alert("中文题目和英文答案都要填。");return false}
+  state.items.push(item);save();render();return true
 }
 function addItemFromForm(){
-  addItem({question:q.value,answer:a.value,type:type.value,stage:stage.value,note:note.value});
-  q.value="";a.value="";note.value="";
+  const ok=addItem({question:q.value,answer:a.value,type:type.value,stage:stage.value,note:note.value});
+  if(ok){q.value="";a.value="";note.value=""}
 }
 function removeItem(id){if(!confirm("确定删除这道题？"))return;state.items=state.items.filter(x=>x.id!==id);save();render()}
 function editItem(id){
   let it=state.items.find(x=>x.id===id); if(!it)return;
-  let q=prompt("中文题目",it.question); if(q===null)return;
-  let a=prompt("英文答案",it.answer); if(a===null)return;
+  let qv=prompt("中文题目",it.question); if(qv===null)return;
+  let av=prompt("英文答案",it.answer); if(av===null)return;
   let st=prompt("阶段",it.stage||""); if(st===null)return;
   let no=prompt("备注",it.note||""); if(no===null)return;
-  it.question=q.trim();it.answer=a.trim();it.stage=st.trim();it.note=no.trim();it.updatedAt=now();save();render()
+  it.question=qv.trim();it.answer=av.trim();it.stage=st.trim();it.note=no.trim();it.updatedAt=now();save();render()
 }
 function render(){
   const nowD=new Date();
   const due=state.items.filter(x=>!x.nextReviewAt||new Date(x.nextReviewAt)<=nowD);
   const mistakes=state.items.filter(x=>(x.wrongCount||0)>0||(x.partialCount||0)>0);
-  statTotal.textContent=state.items.length;statDue.textContent=due.length;statMistakes.textContent=mistakes.length;statToday.textContent=state.records.filter(r=>(r.createdAt||"").slice(0,10)===today()).length;
-  renderLibrary();renderMistakes();prepareTraining(false)
+  statTotal.textContent=state.items.length;
+  statDue.textContent=due.length;
+  statMistakes.textContent=mistakes.length;
+  statToday.textContent=state.records.filter(r=>(r.createdAt||"").slice(0,10)===today()).length;
+  renderLibrary();renderMistakes();prepareTraining(false);refreshExportText()
 }
 function renderLibrary(){
   const s=(search.value||"").toLowerCase().trim();
@@ -226,7 +349,7 @@ function renderLibrary(){
   libraryList.innerHTML=arr.map(it=>`<div class="item"><div class="item-head"><strong>${esc(it.question)}</strong></div><div class="badges"><span class="badge">${esc(it.type)}</span><span class="badge">${esc(it.stage||"未分阶段")}</span><span class="badge">错 ${it.wrongCount||0}</span><span class="badge">对 ${it.correctCount||0}</span></div><p class="muted">${esc(it.answer)}</p>${it.note?`<p>${esc(it.note)}</p>`:""}<div class="actions"><button onclick="quickTrain('${it.id}')">练这题</button><button onclick="editItem('${it.id}')">编辑</button><button class="danger" onclick="removeItem('${it.id}')">删除</button></div></div>`).join("")
 }
 function renderMistakes(){
-  const arr=state.items.filter(x=>(x.wrongCount||0)>0||(x.partialCount||0)>0).sort((a,b)=>(b.wrongCount+b.partialCount)-(a.wrongCount+a.partialCount));
+  const arr=state.items.filter(x=>(x.wrongCount||0)>0||(x.partialCount||0)>0).sort((a,b)=>((b.wrongCount||0)+(b.partialCount||0))-((a.wrongCount||0)+(a.partialCount||0)));
   if(!arr.length){mistakeList.innerHTML='<div class="empty">当前没有错题。</div>';return}
   mistakeList.innerHTML=arr.map(it=>`<div class="item"><strong>${esc(it.question)}</strong><div class="badges"><span class="badge">${esc(it.stage||"未分阶段")}</span><span class="badge">错误 ${it.wrongCount||0}</span><span class="badge">部分正确 ${it.partialCount||0}</span></div><p class="muted">${esc(it.answer)}</p><div class="actions"><button onclick="quickTrain('${it.id}')">再练一次</button><button onclick="resetMistake('${it.id}')">清除错题标记</button></div></div>`).join("")
 }
@@ -249,29 +372,184 @@ function showCurrent(){
 }
 function showAnswer(){yourA.textContent=userA.value.trim()||"未填写";answerBox.classList.remove("hidden")}
 function next(){if(!queue.length)return;idx=(idx+1)%queue.length;showCurrent()}
-function mark(result){
-  const it=queue[idx];if(!it)return;
-  state.records.push({id:uid(),itemId:it.id,question:it.question,userAnswer:userA.value.trim(),correctAnswer:it.answer,result,createdAt:now()});
+function recordResult(it,result,userAnswer){
+  state.records.push({id:uid(),itemId:it.id,question:it.question,userAnswer:userAnswer||"",correctAnswer:it.answer,result,createdAt:now()});
   if(result==="correct"){it.correctCount=(it.correctCount||0)+1;it.nextReviewAt=days(it.correctCount>=5?30:it.correctCount>=3?15:4)}
   if(result==="partial"){it.partialCount=(it.partialCount||0)+1;it.nextReviewAt=days(2)}
   if(result==="wrong"){it.wrongCount=(it.wrongCount||0)+1;it.nextReviewAt=days(1)}
-  it.lastReviewedAt=now();it.updatedAt=now();save();render();next()
+  if(result==="skip"){it.nextReviewAt=days(1)}
+  it.lastReviewedAt=now();it.updatedAt=now();save()
+}
+function mark(result){
+  const it=queue[idx];if(!it)return;
+  recordResult(it,result,userA.value.trim());
+  render();next()
 }
 function quickTrain(id){let it=state.items.find(x=>x.id===id);if(!it)return;queue=[it];idx=0;switchPage("training");noTraining.classList.add("hidden");trainBox.classList.remove("hidden");showCurrent()}
 function resetMistake(id){let it=state.items.find(x=>x.id===id);if(!it)return;it.wrongCount=0;it.partialCount=0;it.updatedAt=now();save();render()}
 function clearMistakeMarks(){if(!confirm("确定清空所有错题标记？题目不会删除。"))return;state.items.forEach(it=>{it.wrongCount=0;it.partialCount=0;it.updatedAt=now()});save();render()}
 function saveSettings(){state.settings.dailyTarget=Number(dailyTarget.value||10);state.settings.defaultStage=defaultStage.value.trim();save();alert("设置已保存。")}
-function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
-function exportJSON(){download("英语训练本地备份.json",JSON.stringify({...state,exportedAt:now()},null,2),"application/json")}
-function csv(v){return '"'+String(v??"").replaceAll('"','""')+'"'}
-function exportCSV(){const heads=["question","answer","type","stage","note","wrongCount","correctCount","partialCount","lastReviewedAt","nextReviewAt"];const rows=state.items.map(it=>heads.map(h=>csv(it[h])).join(","));download("英语训练题库.csv",[heads.join(","),...rows].join("\n"),"text/csv;charset=utf-8")}
-function importJSON(){
-  let obj;try{obj=JSON.parse(importText.value)}catch(e){alert("JSON 格式不对。");return}
-  const arr=Array.isArray(obj)?obj:obj.items;
-  if(!Array.isArray(arr)){alert("需要是数组，或包含 items 数组。");return}
-  let n=0;arr.forEach(x=>{if(x.question&&x.answer){state.items.push({id:uid(),question:String(x.question).trim(),answer:String(x.answer).trim(),type:x.type||"中译英",stage:x.stage||"",note:x.note||"",wrongCount:Number(x.wrongCount||0),partialCount:Number(x.partialCount||0),correctCount:Number(x.correctCount||0),lastReviewedAt:x.lastReviewedAt||null,nextReviewAt:x.nextReviewAt||now(),createdAt:x.createdAt||now(),updatedAt:now()});n++}});
-  save();render();alert("已导入 "+n+" 条题目。")
+
+function startFocusMode(){
+  prepareTraining(true);
+  if(!queue.length){alert("暂无可训练题目。");return}
+  document.getElementById("focusOverlay").classList.add("active");
+  renderFocusQuestion()
 }
+function exitFocusMode(){document.getElementById("focusOverlay").classList.remove("active");render()}
+function renderFocusQuestion(){
+  const it=queue[idx];if(!it)return;
+  focusProgress.textContent=(idx+1)+" / "+queue.length;
+  focusType.textContent=it.type||"中译英";
+  focusStage.textContent=it.stage||"未分阶段";
+  focusQuestion.textContent=it.question;
+  focusUserAnswer.value="";
+  focusAnswer.textContent=it.answer;
+  focusYourAnswer.textContent="";
+  focusAnswerBox.classList.add("hidden");
+  setTimeout(()=>focusUserAnswer.focus(),80)
+}
+function focusShowAnswer(){
+  const it=queue[idx];if(!it)return;
+  focusAnswer.textContent=it.answer;
+  focusYourAnswer.textContent=focusUserAnswer.value.trim()||"未填写";
+  focusAnswerBox.classList.remove("hidden")
+}
+function focusNext(){
+  if(!queue.length)return;
+  idx=(idx+1)%queue.length;
+  renderFocusQuestion()
+}
+function focusMark(result){
+  const it=queue[idx];if(!it)return;
+  recordResult(it,result,focusUserAnswer.value.trim());
+  idx=(idx+1)%queue.length;
+  queue=getQueue();
+  if(!queue.length){exitFocusMode();return}
+  idx=Math.min(idx,queue.length-1);
+  renderFocusQuestion()
+}
+
+function lineToItem(line){
+  let parts=null;
+  if(line.includes("||")) parts=line.split("||");
+  else if(line.includes("\t")) parts=line.split("\t");
+  if(!parts||parts.length<2)return null;
+  parts=parts.map(x=>x.trim());
+  return {question:parts[0],answer:parts[1],type:parts[2]||"中译英",stage:parts[3]||"",note:parts.slice(4).join(" | ")}
+}
+function labeledBlockToItem(block){
+  const obj={};
+  const lines=block.split(/\n/).map(x=>x.trim()).filter(Boolean);
+  for(const line of lines){
+    const m=line.match(/^(中文题目|中文|题目|问题|Q|q|英文答案|英文|答案|A|a|类型|阶段|备注|note|type|stage)\s*[:：]\s*(.*)$/);
+    if(!m)continue;
+    const k=m[1].toLowerCase(); const v=m[2].trim();
+    if(["中文题目","中文","题目","问题","q"].includes(k))obj.question=v;
+    else if(["英文答案","英文","答案","a"].includes(k))obj.answer=v;
+    else if(k==="类型"||k==="type")obj.type=v;
+    else if(k==="阶段"||k==="stage")obj.stage=v;
+    else if(k==="备注"||k==="note")obj.note=v;
+  }
+  if(obj.question&&obj.answer)return obj;
+  if(lines.length>=2&&!lines.some(l=>l.includes("||")||l.includes("\t"))){
+    return {question:lines[0],answer:lines[1],type:"中译英",stage:"",note:lines.slice(2).join(" / ")}
+  }
+  return null;
+}
+function parseImportText(text){
+  const raw=(text||"").replace(/\r\n/g,"\n").trim();
+  if(!raw)return [];
+  let result=[];
+  if(raw.startsWith("[")||raw.startsWith("{")){
+    try{
+      const obj=JSON.parse(raw);
+      const arr=Array.isArray(obj)?obj:(obj.items||obj.data||obj.questions||[]);
+      if(Array.isArray(arr)){
+        result=arr.map(x=>normalizeItem(x)).filter(x=>x.question&&x.answer);
+        if(result.length)return result;
+      }
+    }catch(e){}
+  }
+  const lines=raw.split("\n").map(x=>x.trim()).filter(Boolean);
+  for(const line of lines){
+    const it=lineToItem(line);
+    if(it&&it.question&&it.answer)result.push(normalizeItem(it));
+  }
+  if(result.length)return result;
+  const blocks=raw.split(/\n\s*(?:---+|——+|###)\s*\n|\n{2,}/).map(x=>x.trim()).filter(Boolean);
+  for(const block of blocks){
+    const it=labeledBlockToItem(block);
+    if(it&&it.question&&it.answer)result.push(normalizeItem(it));
+  }
+  if(result.length)return result;
+  for(let i=0;i<lines.length-1;i+=2){
+    const q=lines[i], a=lines[i+1];
+    if(q&&a)result.push(normalizeItem({question:q,answer:a,type:"中译英"}));
+  }
+  return result;
+}
+function previewTextImport(){
+  const text=importText.value;
+  pendingImportItems=parseImportText(text);
+  const status=document.getElementById("importStatus");
+  const box=document.getElementById("previewBox");
+  const btn=document.getElementById("confirmImportBtn");
+  status.classList.remove("hidden");
+  box.classList.remove("hidden");
+  if(!pendingImportItems.length){
+    status.className="card warn";
+    status.innerHTML="<strong>没有识别到题目。</strong><p>推荐格式：中文 || 英文 || 类型 || 阶段 || 备注。也可以两行一组：第一行中文，第二行英文。</p>";
+    box.innerHTML="";
+    btn.disabled=true;
+    return;
+  }
+  status.className="card ok";
+  status.innerHTML=`<strong>识别到 ${pendingImportItems.length} 条题目。</strong><p>检查预览没问题后，点击“确认导入”。</p>`;
+  box.innerHTML=pendingImportItems.slice(0,50).map((it,i)=>`<div class="preview-row"><strong>${i+1}. ${esc(it.question)}</strong><div class="muted">${esc(it.answer)}</div><div class="badges"><span class="badge">${esc(it.type||"中译英")}</span><span class="badge">${esc(it.stage||"未分阶段")}</span>${it.note?`<span class="badge">${esc(it.note)}</span>`:""}</div></div>`).join("")+(pendingImportItems.length>50?`<div class="preview-row muted">只显示前 50 条，其余会一起导入。</div>`:"");
+  btn.disabled=false;
+}
+function confirmTextImport(){
+  if(!pendingImportItems.length){previewTextImport();return}
+  for(const it of pendingImportItems){state.items.push(it)}
+  save();render();
+  alert(`已导入 ${pendingImportItems.length} 条题目。`);
+  pendingImportItems=[];
+  confirmImportBtn.disabled=true;
+  importText.value="";
+  previewBox.classList.add("hidden");
+  importStatus.classList.add("hidden");
+  switchPage("library");
+}
+function clearImportBox(){importText.value="";pendingImportItems=[];previewBox.classList.add("hidden");importStatus.classList.add("hidden");confirmImportBtn.disabled=true}
+function makeTextExport(){
+  return state.items.map(it=>[it.question,it.answer,it.type||"中译英",it.stage||"",it.note||""].map(v=>String(v||"").replace(/\s+/g," ").trim()).join(" || ")).join("\n")
+}
+function refreshExportText(){const box=document.getElementById("exportText");if(box)box.value=makeTextExport()}
+async function copyTextExport(){
+  const text=makeTextExport();
+  if(!text){alert("当前没有题目可导出。");return}
+  try{await navigator.clipboard.writeText(text);alert("题库文本已复制。")}catch(e){refreshExportText();alert("自动复制失败，请手动长按/全选复制下面的文本。")}
+}
+function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
+function downloadTextExport(){const text=makeTextExport(); if(!text){alert("当前没有题目可导出。");return} download("英语训练题库.txt",text,"text/plain;charset=utf-8")}
+function downloadFullBackup(){
+  const text="ENGLISH_DRILL_FULL_BACKUP_V1\n"+btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+  download("英语训练完整备份.txt",text,"text/plain;charset=utf-8")
+}
+function importFullBackup(){
+  const raw=(fullBackupText.value||"").trim();
+  if(!raw.startsWith("ENGLISH_DRILL_FULL_BACKUP_V1")){alert("这不是完整备份文本。");return}
+  try{
+    const payload=raw.split("\n").slice(1).join("").trim();
+    const obj=JSON.parse(decodeURIComponent(escape(atob(payload))));
+    if(!obj||!Array.isArray(obj.items)){alert("完整备份内容不完整。");return}
+    if(!confirm("导入完整备份会覆盖当前本地数据，确定继续？"))return;
+    state=obj;save();load();alert("完整备份已导入。")
+  }catch(e){alert("完整备份解析失败。")}
+}
+function csv(v){return '"'+String(v??"").replaceAll('"','""')+'"'}
+function downloadCSV(){const heads=["question","answer","type","stage","note","wrongCount","correctCount","partialCount","lastReviewedAt","nextReviewAt"];const rows=state.items.map(it=>heads.map(h=>csv(it[h])).join(","));download("英语训练题库.csv",[heads.join(","),...rows].join("\n"),"text/csv;charset=utf-8")}
 function loadSamples(){
   const arr=[
     {question:"你需要注意这个问题。",answer:"You need to pay attention to this problem.",type:"中译英",stage:"第18课",note:"need to do"},
