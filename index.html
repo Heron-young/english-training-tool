@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>英语训练本地工作台</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#f6f7f9;--card:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--primary:#111827;--danger:#b91c1c;--success:#166534;--warning:#92400e;--shadow:0 8px 28px rgba(15,23,42,.06)}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text)}
+header{padding:22px 16px 10px;max-width:960px;margin:auto}
+h1{font-size:24px;margin:0 0 6px}
+h2{font-size:20px;margin:0 0 12px}
+h3{margin:0 0 12px}
+p{line-height:1.7}
+.muted{color:var(--muted);margin:0}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:8px 16px 14px;max-width:960px;margin:auto}
+button,.tab{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 13px;font-size:15px;white-space:nowrap}
+.tab.active,.primary{background:var(--primary);color:#fff}
+.success{color:var(--success);border-color:#bbf7d0}
+.warning{color:var(--warning);border-color:#fde68a}
+.danger{color:var(--danger);border-color:#fecaca}
+main{max-width:960px;margin:auto;padding:0 16px 28px}
+.page{display:none}
+.page.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat span{display:block;color:var(--muted)}
+.stat strong{font-size:28px;display:block;margin-top:8px}
+label{display:grid;gap:7px;font-weight:600;margin-bottom:12px}
+input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;font:inherit;background:#fff}
+textarea{min-height:110px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+.toolbar input{max-width:360px}
+.list{display:grid;gap:10px}
+.item{border:1px solid var(--border);background:#fff;border-radius:14px;padding:14px}
+.item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.badge{font-size:12px;border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:4px 8px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.empty{padding:22px;border:1px dashed var(--border);border-radius:14px;color:var(--muted);text-align:center}
+.hidden{display:none!important}
+.answer{background:#f9fafb;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:220px}
+.notice{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+footer{max-width:960px;margin:auto;padding:0 16px 24px;color:var(--muted);font-size:13px}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}.toolbar{display:grid}.toolbar input{max-width:none}.item-head{display:grid}}
+</style>
+</head>
+<body>
+<header>
+  <h1>英语训练本地工作台</h1>
+  <p class="muted">单文件版 · 不用 GitHub · 不用 Lovable Cloud · 题库/训练/错题/备份</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-page="dashboard">首页</button>
+  <button class="tab" data-page="library">题库</button>
+  <button class="tab" data-page="training">训练</button>
+  <button class="tab" data-page="mistakes">错题本</button>
+  <button class="tab" data-page="backup">备份</button>
+  <button class="tab" data-page="settings">设置</button>
+</nav>
+
+<main>
+<section id="dashboard" class="page active">
+  <div class="stats">
+    <div class="card stat"><span>题目总数</span><strong id="statTotal">0</strong></div>
+    <div class="card stat"><span>待复习</span><strong id="statDue">0</strong></div>
+    <div class="card stat"><span>错题数</span><strong id="statMistakes">0</strong></div>
+    <div class="card stat"><span>今日完成</span><strong id="statToday">0</strong></div>
+  </div>
+  <div class="card">
+    <h2>今日训练</h2>
+    <p class="muted">先不搞复杂系统。先做到：能录题、能练、能记录错题、能导出备份。</p>
+    <div class="actions"><button class="primary" onclick="switchPage('training')">开始训练</button><button onclick="loadSamples()">载入示例题</button></div>
+  </div>
+  <div class="card notice">
+    <h2>重要提醒</h2>
+    <p>这是手机本地工具。数据主要保存在当前浏览器里。为了避免丢失，请定期到「备份」里导出 JSON。</p>
+  </div>
+</section>
+
+<section id="library" class="page">
+  <div class="card">
+    <h2>新增题目</h2>
+    <label>中文题目<textarea id="q" placeholder="例：我需要注意这个问题。"></textarea></label>
+    <label>英文答案<textarea id="a" placeholder="例：I need to pay attention to this problem."></textarea></label>
+    <div class="row">
+      <label>类型<select id="type"><option>中译英</option><option>单词</option><option>句型</option><option>纠错</option><option>其他</option></select></label>
+      <label>阶段<input id="stage" placeholder="例：第18课"></label>
+    </div>
+    <label>备注<input id="note" placeholder="可选：语法点、易错点、来源"></label>
+    <button class="primary" onclick="addItemFromForm()">加入题库</button>
+  </div>
+  <div class="card">
+    <div class="toolbar"><h2>题库</h2><input id="search" placeholder="搜索题目/答案/阶段/备注" oninput="render()"></div>
+    <div id="libraryList" class="list"></div>
+  </div>
+</section>
+
+<section id="training" class="page">
+  <div class="card">
+    <div class="toolbar">
+      <h2>中译英训练</h2>
+      <select id="mode" onchange="prepareTraining()"><option value="due">优先复习</option><option value="all">全部题库</option><option value="mistakes">错题优先</option></select>
+    </div>
+    <div id="noTraining" class="empty">暂无可训练题目。先去「题库」新增，或在「备份」里导入 JSON。</div>
+    <div id="trainBox" class="hidden">
+      <div class="badges"><span class="badge" id="trainType"></span><span class="badge" id="trainStage"></span><span class="badge" id="trainCount"></span></div>
+      <h3 id="trainQ"></h3>
+      <textarea id="userA" placeholder="输入你的英文答案"></textarea>
+      <div class="actions">
+        <button onclick="showAnswer()">查看答案</button>
+        <button class="success" onclick="mark('correct')">正确</button>
+        <button class="warning" onclick="mark('partial')">部分正确</button>
+        <button class="danger" onclick="mark('wrong')">错误</button>
+        <button onclick="next()">下一题</button>
+      </div>
+      <div id="answerBox" class="answer hidden">
+        <strong>参考答案</strong>
+        <p id="trainA"></p>
+        <strong>你的答案</strong>
+        <p id="yourA"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mistakes" class="page">
+  <div class="card">
+    <div class="toolbar"><h2>错题本</h2><button class="danger" onclick="clearMistakeMarks()">清空错题标记</button></div>
+    <div id="mistakeList" class="list"></div>
+  </div>
+</section>
+
+<section id="backup" class="page">
+  <div class="card">
+    <h2>导出备份</h2>
+    <p class="muted">建议经常导出 JSON。这个文件就是你的学习资产备份。</p>
+    <div class="actions"><button onclick="exportJSON()">导出 JSON</button><button onclick="exportCSV()">导出 CSV</button></div>
+  </div>
+  <div class="card">
+    <h2>导入 JSON</h2>
+    <p class="muted">支持导入之前导出的备份，也支持导入题目数组。</p>
+    <textarea id="importText" class="code" placeholder='[
+  {
+    "question": "我需要注意这个问题。",
+    "answer": "I need to pay attention to this problem.",
+    "type": "中译英",
+    "stage": "第18课",
+    "note": "need to do"
+  }
+]'></textarea>
+    <button class="primary" onclick="importJSON()">导入</button>
+  </div>
+</section>
+
+<section id="settings" class="page">
+  <div class="card">
+    <h2>设置</h2>
+    <label>每日目标题数<input id="dailyTarget" type="number" min="1"></label>
+    <label>默认阶段<input id="defaultStage" placeholder="例：基础压实期"></label>
+    <button class="primary" onclick="saveSettings()">保存设置</button>
+  </div>
+  <div class="card">
+    <h2>如何在 iPhone 使用</h2>
+    <p>最简单方式：在「文件」App 里点开这个 HTML 文件。如果只是显示代码，长按文件 → 分享 → 用 Safari 打开。</p>
+    <p class="muted">如果 Safari 本地打开不稳定，后续再考虑免费网页托管。现在先别碰 GitHub。</p>
+  </div>
+</section>
+</main>
+
+<footer>English Drill Local Single File v0.1</footer>
+
+<script>
+const KEY="english_drill_single_v01";
+let state={items:[],records:[],settings:{dailyTarget:10,defaultStage:""}};
+let queue=[];let idx=0;
+
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw)state=JSON.parse(raw)}catch(e){alert("本地存储读取失败。你仍然可以导入/导出 JSON 使用。")}
+  document.getElementById("dailyTarget").value=state.settings.dailyTarget||10;
+  document.getElementById("defaultStage").value=state.settings.defaultStage||"";
+  render();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){alert("本地保存失败，请先导出 JSON 备份。")}}
+function uid(){return "id_"+Date.now()+"_"+Math.random().toString(16).slice(2)}
+function now(){return new Date().toISOString()}
+function today(){return now().slice(0,10)}
+function days(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString()}
+function esc(s){return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function switchPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));document.getElementById(id).classList.add("active");let tab=document.querySelector(`.tab[data-page="${id}"]`);if(tab)tab.classList.add("active");if(id==="training")prepareTraining()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchPage(b.dataset.page));
+
+function addItem(raw){
+  const item={id:uid(),question:(raw.question||"").trim(),answer:(raw.answer||"").trim(),type:raw.type||"中译英",stage:raw.stage||state.settings.defaultStage||"",note:raw.note||"",wrongCount:0,partialCount:0,correctCount:0,lastReviewedAt:null,nextReviewAt:now(),createdAt:now(),updatedAt:now()};
+  if(!item.question||!item.answer){alert("中文题目和英文答案都要填。");return}
+  state.items.push(item);save();render()
+}
+function addItemFromForm(){
+  addItem({question:q.value,answer:a.value,type:type.value,stage:stage.value,note:note.value});
+  q.value="";a.value="";note.value="";
+}
+function removeItem(id){if(!confirm("确定删除这道题？"))return;state.items=state.items.filter(x=>x.id!==id);save();render()}
+function editItem(id){
+  let it=state.items.find(x=>x.id===id); if(!it)return;
+  let q=prompt("中文题目",it.question); if(q===null)return;
+  let a=prompt("英文答案",it.answer); if(a===null)return;
+  let st=prompt("阶段",it.stage||""); if(st===null)return;
+  let no=prompt("备注",it.note||""); if(no===null)return;
+  it.question=q.trim();it.answer=a.trim();it.stage=st.trim();it.note=no.trim();it.updatedAt=now();save();render()
+}
+function render(){
+  const nowD=new Date();
+  const due=state.items.filter(x=>!x.nextReviewAt||new Date(x.nextReviewAt)<=nowD);
+  const mistakes=state.items.filter(x=>(x.wrongCount||0)>0||(x.partialCount||0)>0);
+  statTotal.textContent=state.items.length;statDue.textContent=due.length;statMistakes.textContent=mistakes.length;statToday.textContent=state.records.filter(r=>(r.createdAt||"").slice(0,10)===today()).length;
+  renderLibrary();renderMistakes();prepareTraining(false)
+}
+function renderLibrary(){
+  const s=(search.value||"").toLowerCase().trim();
+  const arr=state.items.filter(it=>!s||[it.question,it.answer,it.type,it.stage,it.note].join(" ").toLowerCase().includes(s)).sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
+  if(!arr.length){libraryList.innerHTML='<div class="empty">暂无题目。</div>';return}
+  libraryList.innerHTML=arr.map(it=>`<div class="item"><div class="item-head"><strong>${esc(it.question)}</strong></div><div class="badges"><span class="badge">${esc(it.type)}</span><span class="badge">${esc(it.stage||"未分阶段")}</span><span class="badge">错 ${it.wrongCount||0}</span><span class="badge">对 ${it.correctCount||0}</span></div><p class="muted">${esc(it.answer)}</p>${it.note?`<p>${esc(it.note)}</p>`:""}<div class="actions"><button onclick="quickTrain('${it.id}')">练这题</button><button onclick="editItem('${it.id}')">编辑</button><button class="danger" onclick="removeItem('${it.id}')">删除</button></div></div>`).join("")
+}
+function renderMistakes(){
+  const arr=state.items.filter(x=>(x.wrongCount||0)>0||(x.partialCount||0)>0).sort((a,b)=>(b.wrongCount+b.partialCount)-(a.wrongCount+a.partialCount));
+  if(!arr.length){mistakeList.innerHTML='<div class="empty">当前没有错题。</div>';return}
+  mistakeList.innerHTML=arr.map(it=>`<div class="item"><strong>${esc(it.question)}</strong><div class="badges"><span class="badge">${esc(it.stage||"未分阶段")}</span><span class="badge">错误 ${it.wrongCount||0}</span><span class="badge">部分正确 ${it.partialCount||0}</span></div><p class="muted">${esc(it.answer)}</p><div class="actions"><button onclick="quickTrain('${it.id}')">再练一次</button><button onclick="resetMistake('${it.id}')">清除错题标记</button></div></div>`).join("")
+}
+function getQueue(){
+  let mode=document.getElementById("mode").value,arr=[];
+  if(mode==="all")arr=[...state.items];
+  else if(mode==="mistakes")arr=state.items.filter(x=>(x.wrongCount||0)>0||(x.partialCount||0)>0);
+  else arr=state.items.filter(x=>!x.nextReviewAt||new Date(x.nextReviewAt)<=new Date());
+  return arr.sort((a,b)=>((b.wrongCount||0)*3+(b.partialCount||0))-((a.wrongCount||0)*3+(a.partialCount||0)))
+}
+function prepareTraining(reset=true){
+  if(reset)idx=0;
+  queue=getQueue();
+  if(!queue.length){noTraining.classList.remove("hidden");trainBox.classList.add("hidden");return}
+  noTraining.classList.add("hidden");trainBox.classList.remove("hidden");idx=Math.min(idx,queue.length-1);showCurrent()
+}
+function showCurrent(){
+  const it=queue[idx];if(!it)return;
+  trainType.textContent=it.type||"中译英";trainStage.textContent=it.stage||"未分阶段";trainCount.textContent=(idx+1)+" / "+queue.length;trainQ.textContent=it.question;trainA.textContent=it.answer;userA.value="";yourA.textContent="";answerBox.classList.add("hidden")
+}
+function showAnswer(){yourA.textContent=userA.value.trim()||"未填写";answerBox.classList.remove("hidden")}
+function next(){if(!queue.length)return;idx=(idx+1)%queue.length;showCurrent()}
+function mark(result){
+  const it=queue[idx];if(!it)return;
+  state.records.push({id:uid(),itemId:it.id,question:it.question,userAnswer:userA.value.trim(),correctAnswer:it.answer,result,createdAt:now()});
+  if(result==="correct"){it.correctCount=(it.correctCount||0)+1;it.nextReviewAt=days(it.correctCount>=5?30:it.correctCount>=3?15:4)}
+  if(result==="partial"){it.partialCount=(it.partialCount||0)+1;it.nextReviewAt=days(2)}
+  if(result==="wrong"){it.wrongCount=(it.wrongCount||0)+1;it.nextReviewAt=days(1)}
+  it.lastReviewedAt=now();it.updatedAt=now();save();render();next()
+}
+function quickTrain(id){let it=state.items.find(x=>x.id===id);if(!it)return;queue=[it];idx=0;switchPage("training");noTraining.classList.add("hidden");trainBox.classList.remove("hidden");showCurrent()}
+function resetMistake(id){let it=state.items.find(x=>x.id===id);if(!it)return;it.wrongCount=0;it.partialCount=0;it.updatedAt=now();save();render()}
+function clearMistakeMarks(){if(!confirm("确定清空所有错题标记？题目不会删除。"))return;state.items.forEach(it=>{it.wrongCount=0;it.partialCount=0;it.updatedAt=now()});save();render()}
+function saveSettings(){state.settings.dailyTarget=Number(dailyTarget.value||10);state.settings.defaultStage=defaultStage.value.trim();save();alert("设置已保存。")}
+function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
+function exportJSON(){download("英语训练本地备份.json",JSON.stringify({...state,exportedAt:now()},null,2),"application/json")}
+function csv(v){return '"'+String(v??"").replaceAll('"','""')+'"'}
+function exportCSV(){const heads=["question","answer","type","stage","note","wrongCount","correctCount","partialCount","lastReviewedAt","nextReviewAt"];const rows=state.items.map(it=>heads.map(h=>csv(it[h])).join(","));download("英语训练题库.csv",[heads.join(","),...rows].join("\n"),"text/csv;charset=utf-8")}
+function importJSON(){
+  let obj;try{obj=JSON.parse(importText.value)}catch(e){alert("JSON 格式不对。");return}
+  const arr=Array.isArray(obj)?obj:obj.items;
+  if(!Array.isArray(arr)){alert("需要是数组，或包含 items 数组。");return}
+  let n=0;arr.forEach(x=>{if(x.question&&x.answer){state.items.push({id:uid(),question:String(x.question).trim(),answer:String(x.answer).trim(),type:x.type||"中译英",stage:x.stage||"",note:x.note||"",wrongCount:Number(x.wrongCount||0),partialCount:Number(x.partialCount||0),correctCount:Number(x.correctCount||0),lastReviewedAt:x.lastReviewedAt||null,nextReviewAt:x.nextReviewAt||now(),createdAt:x.createdAt||now(),updatedAt:now()});n++}});
+  save();render();alert("已导入 "+n+" 条题目。")
+}
+function loadSamples(){
+  const arr=[
+    {question:"你需要注意这个问题。",answer:"You need to pay attention to this problem.",type:"中译英",stage:"第18课",note:"need to do"},
+    {question:"你不应该注意这个信息。",answer:"You should not pay attention to this information.",type:"中译英",stage:"第18课",note:"should not do"},
+    {question:"我现在正在注意这个信息。",answer:"I am paying attention to this information.",type:"中译英",stage:"第18课",note:"现在进行时"},
+    {question:"他过去没有接受这个礼物。",answer:"He didn't accept this gift.",type:"中译英",stage:"基础过去时",note:"didn't + 动词原形"}
+  ];
+  arr.forEach(addItem)
+}
+load();
+</script>
+</body>
+</html>
