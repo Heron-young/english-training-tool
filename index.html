@@ -821,6 +821,136 @@ body.immersive-mode main{padding:12px}
   }
 }
 
+
+/* v0.9 雾感蓝紫粉配色微调：参考树雾照片 */
+:root{
+  --main:#7EA7BC;
+  --mainSoft:rgba(126,167,188,.18);
+  --blue:#8397C9;
+  --purple:#9A92C9;
+  --gold:#B6947B;
+  --glass:rgba(255,255,255,.20);
+  --glassMid:rgba(255,255,255,.28);
+  --glassStrong:rgba(255,255,255,.46);
+  --edge:rgba(255,255,255,.52);
+  --shadow:0 28px 74px rgba(80,94,126,.14);
+  --shadowSoft:0 14px 34px rgba(80,94,126,.08);
+}
+body{
+  background:
+    radial-gradient(circle at 18% 82%, rgba(140,174,230,.40), rgba(140,174,230,.12) 28%, transparent 52%),
+    radial-gradient(circle at 52% 64%, rgba(190,194,235,.26), rgba(190,194,235,.10) 24%, transparent 48%),
+    radial-gradient(circle at 38% 24%, rgba(246,221,232,.26), rgba(246,221,232,.08) 18%, transparent 42%),
+    radial-gradient(circle at 70% 18%, rgba(176,198,242,.20), rgba(176,198,242,.06) 22%, transparent 46%),
+    linear-gradient(180deg, #F7F5FA 0%, #EEF1F9 38%, #E7EEF9 70%, #DCE6F7 100%);
+  background-attachment:fixed;
+}
+body::before{
+  inset:-20%;
+  background:
+    radial-gradient(circle at 48% 32%, rgba(255,255,255,.90), transparent 24%),
+    conic-gradient(from 210deg at 50% 50%, rgba(255,255,255,.74), rgba(193,208,236,.22), rgba(243,225,235,.18), rgba(176,193,232,.22), rgba(255,255,255,.72));
+  filter:blur(98px);
+  opacity:.98;
+}
+body::after{
+  background:
+    linear-gradient(125deg, rgba(255,255,255,.30), transparent 34%, rgba(255,255,255,.10) 62%, transparent),
+    linear-gradient(rgba(255,255,255,.10) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);
+  background-size:auto,56px 56px,56px 56px;
+  opacity:.22;
+}
+.top{
+  background:rgba(246,247,252,.24);
+  border-bottom:1px solid rgba(255,255,255,.42);
+  box-shadow:0 16px 42px rgba(80,94,126,.08);
+}
+.card{
+  background:rgba(255,255,255,.18);
+  border-color:rgba(255,255,255,.26);
+  box-shadow:
+    0 24px 64px rgba(80,94,126,.10),
+    inset 0 1px 0 rgba(255,255,255,.72),
+    inset 0 -1px 0 rgba(255,255,255,.10);
+}
+.card::before{
+  background:
+    linear-gradient(140deg, rgba(255,255,255,.66), rgba(255,255,255,.12) 42%, rgba(214,225,245,.06) 62%, rgba(255,255,255,.22)),
+    radial-gradient(circle at 10% 0%, rgba(255,255,255,.74), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(223,231,248,.24), transparent 40%);
+}
+.card::after{
+  border-color:rgba(255,255,255,.16);
+}
+button{
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.46),
+    inset 0 1px 0 rgba(255,255,255,.66),
+    inset 0 -1px 0 rgba(255,255,255,.12),
+    0 12px 28px rgba(80,94,126,.07);
+}
+button.primary, .answer-card .bottom-nav button.primary, .tab.active, .qnum.active{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.48), transparent 44%),
+    linear-gradient(145deg, rgba(150,183,214,.92), rgba(116,150,188,.84)),
+    rgba(126,167,188,.82);
+  color:#fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.54),
+    inset 0 -1px 0 rgba(255,255,255,.12),
+    0 18px 36px rgba(113,142,180,.20);
+}
+.badge.green{background:rgba(126,167,188,.16);color:var(--main)}
+.badge.blue{background:rgba(131,151,201,.16);color:var(--blue)}
+.badge.purple{background:rgba(154,146,201,.16);color:var(--purple)}
+.answer-card{
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,.74), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(171,198,236,.18), transparent 38%),
+    linear-gradient(138deg, rgba(255,255,255,.30), rgba(234,240,251,.20) 42%, rgba(239,234,244,.12) 66%, rgba(223,233,248,.22));
+  box-shadow:
+    0 34px 90px rgba(80,94,126,.14),
+    0 10px 34px rgba(80,94,126,.07),
+    inset 0 1px 0 rgba(255,255,255,.74),
+    inset 0 -1px 0 rgba(255,255,255,.08);
+}
+.answer-card::before{
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.14) 36%, rgba(214,232,244,.10) 64%, rgba(246,232,239,.18)),
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.62), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(205,224,244,.16), transparent 44%);
+}
+.answer-card textarea{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.28), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,.10), rgba(224,235,247,.08)),
+    rgba(255,255,255,.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -1px 0 rgba(255,255,255,.06),
+    0 18px 42px rgba(80,94,126,.028);
+}
+.answer-card textarea:focus{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.36), transparent 44%),
+    linear-gradient(145deg, rgba(255,255,255,.14), rgba(223,236,248,.10)),
+    rgba(255,255,255,.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.44),
+    inset 0 -1px 0 rgba(255,255,255,.06),
+    0 0 0 4px rgba(126,167,188,.05),
+    0 22px 48px rgba(80,94,126,.035);
+}
+.answer-card details summary{
+  background:rgba(255,255,255,.12);
+  color:rgba(88,96,112,.60);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 8px 18px rgba(80,94,126,.025);
+}
+.submit-hint.warn{color:#A67A57}
+
 </style>
 </head>
 <body>
