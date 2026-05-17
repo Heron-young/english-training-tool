@@ -1204,18 +1204,242 @@ body::after{
   .answer-card details p{max-width:100%}
 }
 
+
+/* 直接开发版：音标 + 题号状态 + 作答区单一液态玻璃 */
+.qnums button.answered{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.40), transparent 44%),
+    linear-gradient(145deg, rgba(178,204,226,.42), rgba(150,180,208,.28)),
+    rgba(255,255,255,.18);
+  color:rgba(78,94,116,.82);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.52),
+    0 10px 22px rgba(125,159,198,.10);
+}
+.qnums button.unanswered{
+  background:rgba(255,255,255,.11);
+  color:rgba(145,112,76,.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(210,194,172,.38),
+    inset 0 1px 0 rgba(255,255,255,.34);
+}
+
+/* 作答区：只保留一个整体玻璃面，内部不再有框 */
+.answer-card{
+  border:none !important;
+  outline:none !important;
+  border-radius:34px;
+  padding:28px 30px 24px;
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255,255,255,.92), rgba(255,255,255,.22) 28%, transparent 56%),
+    radial-gradient(circle at 18% 92%, rgba(159,190,232,.20), transparent 38%),
+    radial-gradient(circle at 84% 20%, rgba(219,221,246,.14), transparent 32%),
+    radial-gradient(circle at 36% 18%, rgba(250,232,240,.12), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.24), rgba(236,242,251,.15) 42%, rgba(229,237,249,.10) 68%, rgba(255,255,255,.18));
+  box-shadow:
+    0 42px 120px rgba(92,108,142,.15),
+    0 12px 34px rgba(92,108,142,.055),
+    inset 0 1px 0 rgba(255,255,255,.74),
+    inset 0 -1px 0 rgba(255,255,255,.035);
+  backdrop-filter:blur(72px) saturate(250%);
+  -webkit-backdrop-filter:blur(72px) saturate(250%);
+  overflow:hidden;
+}
+.answer-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.68), rgba(255,255,255,.10) 34%, rgba(216,230,246,.045) 62%, rgba(255,255,255,.16)),
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.72), transparent 28%),
+    radial-gradient(circle at 0% 100%, rgba(171,197,239,.12), transparent 32%),
+    radial-gradient(circle at 100% 0%, rgba(248,232,240,.08), transparent 28%);
+  opacity:1;
+}
+.answer-card::after{
+  display:none !important;
+}
+
+.answer-card .meta,
+.answer-card .question-title,
+.answer-card label,
+.answer-card .reference-block,
+.answer-card .reference-content{
+  text-align:center;
+}
+
+.answer-card .meta{
+  justify-content:center;
+  color:rgba(76,81,90,.50);
+  margin-bottom:10px;
+}
+.answer-card .question-title{
+  max-width:94%;
+  margin:8px auto 24px;
+  font-size:24px;
+  line-height:1.42;
+  text-shadow:0 1px 0 rgba(255,255,255,.44);
+}
+.answer-card label{
+  display:block;
+  width:100%;
+  margin:18px 0 10px;
+  font-size:17px;
+  font-weight:720;
+  color:rgba(24,26,30,.90);
+}
+
+/* textarea完全融入整体玻璃，不再显示任何输入框形态 */
+.answer-card textarea,
+.answer-card textarea:focus,
+.answer-card textarea:hover{
+  border:none !important;
+  outline:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  appearance:none;
+  -webkit-appearance:none;
+  padding:8px 2px 10px;
+  text-align:center;
+  color:rgba(20,22,26,.92);
+  line-height:1.65;
+  resize:none;
+}
+.answer-card textarea::placeholder{
+  color:rgba(98,106,118,.34);
+  text-align:center;
+}
+.answer-card .answer-input{
+  min-height:188px;
+  font-size:20px;
+}
+.answer-card .self-input{
+  min-height:112px;
+  font-size:18px;
+}
+
+/* 用轻雾层级替代内部框线 */
+.answer-card #answerInput{
+  background-image:
+    radial-gradient(circle at 50% 5%, rgba(255,255,255,.16), transparent 45%),
+    linear-gradient(180deg, rgba(255,255,255,.04), transparent 72%) !important;
+}
+.answer-card #selfInput{
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.10), transparent 48%),
+    linear-gradient(180deg, rgba(255,255,255,.025), transparent 72%) !important;
+}
+
+/* 参考答案和音标：不做卡片，只做文字浮层 */
+.answer-card .reference-block{
+  margin:10px auto 0 !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+.answer-card .reference-block summary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:6px 10px;
+  border:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:rgba(86,92,102,.54);
+  font-size:13px;
+  cursor:pointer;
+}
+.answer-card .reference-block summary::before{
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.answer-card .reference-content{
+  margin:10px auto 0;
+  max-width:76%;
+  color:rgba(54,58,64,.72);
+  line-height:1.65;
+}
+.answer-card .reference-answer{
+  font-size:15px;
+}
+.answer-card .reference-phonetic{
+  margin-top:6px;
+  font-size:13px;
+  color:rgba(86,92,102,.56);
+  letter-spacing:.01em;
+}
+
+/* 底部按钮保持液态玻璃，但去硬边 */
+.answer-card .bottom-nav button{
+  border:none !important;
+  min-width:118px;
+  border-radius:999px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.48), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,.18), rgba(229,238,249,.09)),
+    rgba(255,255,255,.09);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.50),
+    inset 0 -1px 0 rgba(255,255,255,.05),
+    0 18px 38px rgba(94,108,142,.07);
+  backdrop-filter:blur(34px) saturate(220%);
+  -webkit-backdrop-filter:blur(34px) saturate(220%);
+}
+.answer-card .bottom-nav button.primary{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.52), transparent 42%),
+    linear-gradient(145deg, rgba(157,187,219,.86), rgba(125,159,198,.78)),
+    rgba(138,168,197,.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.56),
+    inset 0 -1px 0 rgba(255,255,255,.08),
+    0 18px 42px rgba(125,159,198,.18);
+}
+.answer-card .bottom-nav button::before{
+  opacity:.36;
+}
+
+@media(max-width:720px){
+  .answer-card{
+    padding:22px 18px 18px;
+    border-radius:30px;
+    min-height:calc(100vh - 112px);
+  }
+  .answer-card .question-title{
+    font-size:22px;
+    max-width:100%;
+  }
+  .answer-card .answer-input{
+    min-height:164px;
+    font-size:19px;
+  }
+  .answer-card .self-input{
+    min-height:102px;
+    font-size:17px;
+  }
+  .answer-card .reference-content{
+    max-width:100%;
+  }
+}
+
 </style>
 </head>
 <body>
 <div class="app"><div class="top"><div class="header"><div class="logo" aria-label="Heron avatar"></div><div class="title"><h1>Heron · 英语训练平台</h1><p>English training platform</p></div><button class="ghost exit" onclick="location.reload()">退出</button></div><div class="nav"><button class="active" data-page="rounds">训练轮次</button><button data-page="newRound">新建</button><button data-page="pending">待 AI 二筛</button><button data-page="guide">说明</button></div></div>
 <main>
 <section id="rounds" class="page active"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div><h2>训练轮次</h2><p class="sub">选择一个轮次开始作答。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div><div id="roundList"></div></section>
-<section id="newRound" class="page"><h2>新建轮次</h2><p class="sub">一轮训练就是一个独立包：题目、作答、一筛、AI 二筛、日期和 ID 都会保留。</p><div class="card"><label>轮次标题</label><input id="newTitle" placeholder="例：第8轮｜回流压实 + 小作文轻输出"><label>题目文本</label><textarea id="newText" class="big" placeholder="推荐：一行一道题&#10;【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || found my keys&#10;【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 现在进行时"></textarea><div class="actions"><button onclick="previewCreate()">预览识别</button><button id="createBtn" class="primary" onclick="createRound()" disabled>创建轮次</button></div></div><div id="createPreview"></div></section>
+<section id="newRound" class="page"><h2>新建轮次</h2><p class="sub">一轮训练就是一个独立包：题目、作答、一筛、AI 二筛、日期和 ID 都会保留。</p><div class="card"><label>轮次标题</label><input id="newTitle" placeholder="例：第8轮｜回流压实 + 小作文轻输出"><label>题目文本</label><textarea id="newText" class="big" placeholder="推荐：一行一道题&#10;【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || found my keys || /aɪ faʊnd maɪ kiːz/&#10;【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/"></textarea><div class="actions"><button onclick="previewCreate()">预览识别</button><button id="createBtn" class="primary" onclick="createRound()" disabled>创建轮次</button></div></div><div id="createPreview"></div></section>
 <section id="pending" class="page"><h2>待 AI 二筛区</h2><p class="sub">已提交的轮次结果包。复制内容粘贴给 ChatGPT 进行二筛。</p><div id="pendingList"></div></section>
-<section id="guide" class="page"><h2>说明</h2><div class="card"><h3>导入格式</h3><p class="sub">推荐一行一道题，用 <b>||</b> 分隔。</p><div class="preview">原题 || 参考答案 || 类型 || 阶段 || 备注
+<section id="guide" class="page"><h2>说明</h2><div class="card"><h3>导入格式</h3><p class="sub">推荐一行一道题，用 <b>||</b> 分隔。</p><div class="preview">原题 || 参考答案 || 类型 || 阶段 || 备注 || 音标
 
-【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || found my keys
-【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 现在进行时</div></div><div class="card"><h3>完整备份</h3><p class="small">用于迁移全部轮次、作答、日期、ID 和状态。</p><div class="actions"><button onclick="downloadBackup()">下载完整备份</button><button onclick="copyBackup()">复制完整备份</button></div><label>粘贴完整备份</label><textarea id="backupIn" class="big" placeholder="粘贴完整备份文本"></textarea><button class="primary" onclick="importBackup()">导入完整备份</button></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
+【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || found my keys || /aɪ faʊnd maɪ kiːz/
+【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/</div></div><div class="card"><h3>完整备份</h3><p class="small">用于迁移全部轮次、作答、日期、ID 和状态。</p><div class="actions"><button onclick="downloadBackup()">下载完整备份</button><button onclick="copyBackup()">复制完整备份</button></div><label>粘贴完整备份</label><textarea id="backupIn" class="big" placeholder="粘贴完整备份文本"></textarea><button class="primary" onclick="importBackup()">导入完整备份</button></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
 <section id="detail" class="page"><div class="back" onclick="showPage('rounds')">← 返回列表</div><div id="detailBox"></div></section>
 <section id="exportPage" class="page"><div class="back" onclick="openRound(currentRoundId)">← 返回轮次</div><div id="exportBox"></div></section>
 </main></div>
@@ -1228,8 +1452,8 @@ function statusOrder(s){return{answering:0,first_screen:1,pending_ai:2,ai_done:3
 function setRoundStatus(id,status){const r=getRound(id);if(!r)return;r.status=status;r.updatedAt=now();if(status==="first_screen")r.firstScreenAt=now();if(status==="pending_ai")r.submittedAt=now();if(status==="ai_done")r.aiDoneAt=now();if(status==="reviewed")r.reviewedAt=now();if(status==="notion_done"||status==="done")r.notionDoneAt=now();save();if(currentRoundId===id){renderDetail()}else{renderRounds()}}
 function renderStatusControls(r){const steps=[["first_screen","一筛完成"],["pending_ai","待 AI 二筛"],["ai_done","AI 已二筛"],["reviewed","Heron 已审核"],["notion_done","已沉淀 Notion"]];const cur=statusOrder(r.status);return `<div class="status-flow-label">流转状态</div><div class="status-flow">${steps.map(([key,label])=>`<button class="${r.status===key?'active':statusOrder(key)<cur?'done':''}" onclick="event.stopPropagation();setRoundStatus('${r.id}','${key}')">${label}</button>`).join("")}</div>`}function answeredCount(r){return r.questions.filter(q=>(q.userAnswer||"").trim()).length}function compactStats(r){const total=r.questions.length,done=answeredCount(r);return `总题 <b>${total}</b> · 已作答 <b>${done}</b> · 未作答 <b>${total-done}</b>`}
 function renderRounds(){const box=document.getElementById("roundList");if(!state.rounds.length){box.innerHTML='<div class="empty">暂无训练轮次。点击“新建”开始。</div>';return}box.innerHTML=state.rounds.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(r=>`<div class="card round-card" onclick="openRound('${r.id}')"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${r.questions.length} 题</span><span>已作答 ${answeredCount(r)}/${r.questions.length}</span><span>${fmtDate(r.createdAt).split(" ")[0]}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div><button class="delete" onclick="event.stopPropagation();deleteRound('${r.id}')">⌫</button></div>`).join("")}
-function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();if(!raw)return[];let result=[];const lines=raw.split("\n").map(x=>x.trim()).filter(Boolean);for(const line of lines){if(line.includes("||")||line.includes("\t")){const parts=(line.includes("||")?line.split("||"):line.split("\t")).map(x=>x.trim());if(parts[0]&&parts[1])result.push({id:uid("q"),prompt:parts[0],reference:parts[1],type:parts[2]||"中译英",stage:parts[3]||"",note:parts.slice(4).join(" | "),userAnswer:"",selfCheck:""})}}if(result.length)return result;const blocks=raw.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);for(const block of blocks){const l=block.split("\n").map(x=>x.trim()).filter(Boolean);if(l.length>=2)result.push({id:uid("q"),prompt:l[0],reference:l[1],type:"中译英",stage:"",note:l.slice(2).join(" / "),userAnswer:"",selfCheck:""})}return result}
-function previewCreate(){pendingQuestions=parseQuestions(document.getElementById("newText").value);const box=document.getElementById("createPreview");const btn=document.getElementById("createBtn");if(!pendingQuestions.length){box.innerHTML='<div class="card notice">没有识别到题目。推荐格式：原题 || 参考答案 || 类型 || 阶段 || 备注</div>';btn.disabled=true;return}box.innerHTML=`<div class="card"><h3>识别到 ${pendingQuestions.length} 题</h3>${pendingQuestions.slice(0,8).map((q,i)=>`<p><b>${i+1}. ${esc(q.prompt)}</b><br><span class="small">${esc(q.reference)}</span></p>`).join("")}${pendingQuestions.length>8?'<p class="small">只预览前 8 题。</p>':''}</div>`;btn.disabled=false}
+function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();if(!raw)return[];let result=[];const lines=raw.split("\n").map(x=>x.trim()).filter(Boolean);for(const line of lines){if(line.includes("||")||line.includes("\t")){const parts=(line.includes("||")?line.split("||"):line.split("\t")).map(x=>x.trim());if(parts[0]&&parts[1])result.push({id:uid("q"),prompt:parts[0],reference:parts[1],type:parts[2]||"中译英",stage:parts[3]||"",note:parts[4]||"",phonetic:parts.slice(5).join(" | "),userAnswer:"",selfCheck:""})}}if(result.length)return result;const blocks=raw.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);for(const block of blocks){const l=block.split("\n").map(x=>x.trim()).filter(Boolean);if(l.length>=2)result.push({id:uid("q"),prompt:l[0],reference:l[1],type:"中译英",stage:"",note:l.slice(2).join(" / "),phonetic:"",userAnswer:"",selfCheck:""})}return result}
+function previewCreate(){pendingQuestions=parseQuestions(document.getElementById("newText").value);const box=document.getElementById("createPreview");const btn=document.getElementById("createBtn");if(!pendingQuestions.length){box.innerHTML='<div class="card notice">没有识别到题目。推荐格式：原题 || 参考答案 || 类型 || 阶段 || 备注 || 音标</div>';btn.disabled=true;return}box.innerHTML=`<div class="card"><h3>识别到 ${pendingQuestions.length} 题</h3>${pendingQuestions.slice(0,8).map((q,i)=>`<p><b>${i+1}. ${esc(q.prompt)}</b><br><span class="small">${esc(q.reference)}</span></p>`).join("")}${pendingQuestions.length>8?'<p class="small">只预览前 8 题。</p>':''}</div>`;btn.disabled=false}
 function createRound(){if(!pendingQuestions.length)previewCreate();if(!pendingQuestions.length)return;const title=document.getElementById("newTitle").value.trim()||`训练轮次：${fmtDate(now())}`;const r={id:uid("tr"),title,createdAt:now(),updatedAt:now(),submittedAt:null,status:"answering",questions:pendingQuestions};state.rounds.push(r);save();document.getElementById("newTitle").value="";document.getElementById("newText").value="";document.getElementById("createPreview").innerHTML="";document.getElementById("createBtn").disabled=true;pendingQuestions=[];openRound(r.id)}function getRound(id){return state.rounds.find(r=>r.id===id)}function openRound(id){currentRoundId=id;currentIndex=0;currentMode="answer";showPage("detail");renderDetail()}function deleteRound(id){if(!confirm("确定删除这个训练轮次？"))return;state.rounds=state.rounds.filter(r=>r.id!==id);save();renderRounds()}
 function renderDetail(){
   const r=getRound(currentRoundId);
@@ -1282,7 +1506,7 @@ function renderDetail(){
       <button onclick="showExport()">查看导出文本</button>
     </div>`;
 }
-function renderAnswerMode(q,total){if(!q)return"";const r=getRound(currentRoundId);return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':''}" onclick="saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div><div class="card answer-card"><div class="meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div><div class="question-title">${esc(q.prompt)}</div><label>你的英文作答</label><textarea id="answerInput" class="answer-input" oninput="saveCurrentSoft()" placeholder="在这里输入你的英文答案">${esc(q.userAnswer)}</textarea><label>一筛 / 自检（可选）</label><textarea id="selfInput" class="self-input" oninput="saveCurrentSoft()" placeholder="自己先复盘一遍：可能错在哪？想确认什么？">${esc(q.selfCheck)}</textarea><details style="margin-top:12px"><summary>显示参考答案</summary><p>${esc(q.reference)}</p></details><div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div></div>`}
+function renderAnswerMode(q,total){if(!q)return"";const r=getRound(currentRoundId);return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':(x.userAnswer||"").trim()?'answered':'unanswered'}" onclick="submitHint='';saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div><div class="card answer-card"><div class="meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div><div class="question-title">${esc(q.prompt)}</div><label>你的英文作答</label><textarea id="answerInput" class="answer-input" oninput="saveCurrentSoft()" placeholder="在这里输入你的英文答案">${esc(q.userAnswer)}</textarea><label>一筛 / 自检（可选）</label><textarea id="selfInput" class="self-input" oninput="saveCurrentSoft()" placeholder="自己先复盘一遍：可能错在哪？想确认什么？">${esc(q.selfCheck)}</textarea><details class="reference-block"><summary>显示参考答案</summary><div class="reference-content"><div class="reference-answer">${esc(q.reference)}</div>${q.phonetic?`<div class="reference-phonetic">${esc(q.phonetic)}</div>`:""}</div></details><div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div></div>`}
 function renderListMode(r){return `<div class="card">${r.questions.map((q,i)=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>第 ${i+1} 题</b><p>${esc(q.prompt)}</p><p class="small">Heron 作答：${esc(q.userAnswer||"（未作答）")}</p><p class="small">一筛：${esc(q.selfCheck||"（无）")}</p></div>`).join("")}</div>`}function saveCurrent(){const r=getRound(currentRoundId);if(!r||currentMode!=="answer")return;const q=r.questions[currentIndex];if(!q)return;const a=document.getElementById("answerInput"),s=document.getElementById("selfInput");if(a)q.userAnswer=a.value;if(s)q.selfCheck=s.value;q.updatedAt=now();r.updatedAt=now();save()}let softTimer=null;function saveCurrentSoft(){clearTimeout(softTimer);softTimer=setTimeout(()=>{saveCurrent();renderRounds()},300)}
 function finishAnswering(){
   saveCurrent();
@@ -1306,7 +1530,7 @@ function finishAnswering(){
   renderDetail();
 }
 function nextQ(){submitHint="";saveCurrent();const r=getRound(currentRoundId);if(currentIndex<r.questions.length-1)currentIndex++;renderDetail()}function prevQ(){submitHint="";saveCurrent();if(currentIndex>0)currentIndex--;renderDetail()}
-function submitForAI(){saveCurrent();const r=getRound(currentRoundId);if(!r)return;r.status="pending_ai";r.submittedAt=now();r.updatedAt=now();save();showExport()}function buildAIText(r){const done=answeredCount(r);return `训练轮次：${r.title}\nID：${r.id}\n创建日期：${fmtDate(r.createdAt)}\n提交日期：${fmtDate(r.submittedAt||now())}\n题目总数：${r.questions.length}\n已作答：${done}/${r.questions.length}\n当前状态：${statusLabel(r.status)}\n\n请对以下英语训练作答进行二筛：\n1. 判断 Heron 作答是否正确。\n2. 指出明显错误和最小必要修改。\n3. 不要超出当前学习阶段纠错。\n4. 优先保留原有表达，只做必要修正。\n5. 按题号输出结果。\n\n====== 作答内容 ======\n\n`+r.questions.map((q,i)=>`【第 ${i+1} 题】\n原题：${q.prompt}\n参考答案：${q.reference}\nHeron 作答：${q.userAnswer||"（未作答）"}\nHeron 一筛：${q.selfCheck||"（无）"}\n类型：${q.type||"中译英"}\n阶段：${q.stage||"（无）"}\n备注：${q.note||"（无）"}`).join("\n\n")}
+function submitForAI(){saveCurrent();const r=getRound(currentRoundId);if(!r)return;r.status="pending_ai";r.submittedAt=now();r.updatedAt=now();save();showExport()}function buildAIText(r){const done=answeredCount(r);return `训练轮次：${r.title}\nID：${r.id}\n创建日期：${fmtDate(r.createdAt)}\n提交日期：${fmtDate(r.submittedAt||now())}\n题目总数：${r.questions.length}\n已作答：${done}/${r.questions.length}\n当前状态：${statusLabel(r.status)}\n\n请对以下英语训练作答进行二筛：\n1. 判断 Heron 作答是否正确。\n2. 指出明显错误和最小必要修改。\n3. 不要超出当前学习阶段纠错。\n4. 优先保留原有表达，只做必要修正。\n5. 按题号输出结果。\n\n====== 作答内容 ======\n\n`+r.questions.map((q,i)=>`【第 ${i+1} 题】\n原题：${q.prompt}\n参考答案：${q.reference}\nHeron 作答：${q.userAnswer||"（未作答）"}\nHeron 一筛：${q.selfCheck||"（无）"}\n类型：${q.type||"中译英"}\n阶段：${q.stage||"（无）"}\n备注：${q.note||"（无）"}\n音标：${q.phonetic||"（无）"}`).join("\n\n")}
 function showExport(){saveCurrent();showPage("exportPage");const r=getRound(currentRoundId);if(!r)return;const text=buildAIText(r);document.getElementById("exportBox").innerHTML=`<h2>提交结果</h2><p class="sub">训练轮次：${esc(r.title)}</p><div class="compact-stats">${compactStats(r)}</div>${renderStatusControls(r)}<div class="card"><h3>导出给 AI 二筛</h3><div class="actions"><button class="primary" onclick="copyAIText()">复制</button><button onclick="downloadAIText()">下载 .txt</button></div><textarea id="aiText" class="big" readonly>${esc(text)}</textarea></div>`}async function copyAIText(){const t=document.getElementById("aiText").value;try{await navigator.clipboard.writeText(t);alert("已复制。")}catch(e){alert("复制失败，请手动全选复制。")}}function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}function downloadAIText(){const r=getRound(currentRoundId);download(`${r.id}-AI二筛.txt`,buildAIText(r),"text/plain;charset=utf-8")}
 function renderPending(){const arr=state.rounds.filter(r=>r.status==="pending_ai");const box=document.getElementById("pendingList");if(!arr.length){box.innerHTML='<div class="empty">暂无待 AI 二筛的训练轮次。</div>';return}box.innerHTML=arr.sort((a,b)=>new Date(b.submittedAt||b.updatedAt)-new Date(a.submittedAt||a.updatedAt)).map(r=>`<div class="card round-card" onclick="currentRoundId='${r.id}';showExport()"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${fmtDate(r.submittedAt||r.updatedAt)}</span><span>已作答 ${answeredCount(r)}/${r.questions.length}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div></div>`).join("")}function backupText(){return"HERON_ENGLISH_TOOL_BACKUP_V04\n"+btoa(unescape(encodeURIComponent(JSON.stringify(state))))}function downloadBackup(){download(`Heron英语训练完整备份-${Date.now()}.txt`,backupText(),"text/plain;charset=utf-8")}async function copyBackup(){try{await navigator.clipboard.writeText(backupText());alert("完整备份已复制。")}catch(e){alert("复制失败，请下载备份。")}}function importBackup(){const raw=document.getElementById("backupIn").value.trim();if(!raw.startsWith("HERON_ENGLISH_TOOL_BACKUP_V04")){alert("不是 v0.4 完整备份。");return}if(!confirm("导入完整备份会覆盖当前数据，确定继续？"))return;try{const payload=raw.split("\n").slice(1).join("").trim();state=JSON.parse(decodeURIComponent(escape(atob(payload))));save();load();showPage("rounds");alert("导入完成。")}catch(e){alert("导入失败。")}}
 load();
