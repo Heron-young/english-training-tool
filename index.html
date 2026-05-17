@@ -1790,6 +1790,98 @@ body::after{
   }
 }
 
+
+/* 最终修正：移除原生 textarea，改为玻璃面上的无框书写区 */
+.answer-card textarea{
+  display:none !important;
+}
+
+.answer-card .glass-editor{
+  width:100%;
+  min-height:120px;
+  border:0 !important;
+  outline:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  padding:8px 2px 10px !important;
+  margin:0 !important;
+  text-align:center;
+  color:rgba(20,22,26,.92);
+  line-height:1.65;
+  white-space:pre-wrap;
+  word-break:break-word;
+  caret-color:rgba(70,100,130,.88);
+  -webkit-user-select:text;
+  user-select:text;
+}
+
+.answer-card .glass-editor:focus{
+  outline:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+.answer-card .glass-editor:empty::before{
+  content:attr(data-placeholder);
+  color:rgba(98,106,118,.32);
+  pointer-events:none;
+}
+
+.answer-card .answer-input.glass-editor{
+  min-height:190px !important;
+  font-size:20px !important;
+}
+
+.answer-card .self-input.glass-editor{
+  min-height:112px !important;
+  font-size:18px !important;
+}
+
+/* 用空气感和留白分区，而不是矩形区分 */
+.answer-card label{
+  position:relative;
+}
+
+.answer-card label::after{
+  content:"";
+  display:block;
+  width:42px;
+  height:1px;
+  margin:8px auto 0;
+  background:linear-gradient(90deg, transparent, rgba(120,145,170,.18), transparent);
+}
+
+/* 彻底覆盖之前可能残留的输入背景图 */
+.answer-card #answerInput,
+.answer-card #selfInput{
+  background:none !important;
+  background-image:none !important;
+  box-shadow:none !important;
+  border:none !important;
+}
+
+/* 作答区整体再柔一点，避免靠内部矩形制造层级 */
+.answer-card{
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255,255,255,.98), rgba(255,255,255,.22) 30%, transparent 58%),
+    radial-gradient(circle at 18% 94%, rgba(154,186,232,.16), transparent 42%),
+    radial-gradient(circle at 88% 20%, rgba(213,216,244,.10), transparent 34%),
+    radial-gradient(circle at 36% 18%, rgba(250,232,240,.08), transparent 26%),
+    linear-gradient(145deg, rgba(255,255,255,.20), rgba(236,242,251,.115) 42%, rgba(229,237,249,.075) 68%, rgba(255,255,255,.14)) !important;
+}
+
+@media(max-width:720px){
+  .answer-card .answer-input.glass-editor{
+    min-height:166px !important;
+    font-size:19px !important;
+  }
+  .answer-card .self-input.glass-editor{
+    min-height:102px !important;
+    font-size:17px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1868,8 +1960,8 @@ function renderDetail(){
       <button onclick="showExport()">查看导出文本</button>
     </div>`;
 }
-function renderAnswerMode(q,total){if(!q)return"";const r=getRound(currentRoundId);return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':(x.userAnswer||"").trim()?'answered':'unanswered'}" onclick="submitHint='';saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div><div class="card answer-card"><div class="meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div><div class="question-title">${esc(q.prompt)}</div><label>你的英文作答</label><textarea id="answerInput" class="answer-input" oninput="saveCurrentSoft()" placeholder="在这里输入你的英文答案">${esc(q.userAnswer)}</textarea><label>一筛 / 自检（可选）</label><textarea id="selfInput" class="self-input" oninput="saveCurrentSoft()" placeholder="自己先复盘一遍：可能错在哪？想确认什么？">${esc(q.selfCheck)}</textarea><details class="reference-block"><summary>显示参考答案</summary><div class="reference-content"><div class="reference-answer">${esc(q.reference)}</div>${q.phonetic?`<div class="reference-phonetic">${esc(q.phonetic)}</div>`:""}</div></details><div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div></div>`}
-function renderListMode(r){return `<div class="card">${r.questions.map((q,i)=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>第 ${i+1} 题</b><p>${esc(q.prompt)}</p><p class="small">Heron 作答：${esc(q.userAnswer||"（未作答）")}</p><p class="small">一筛：${esc(q.selfCheck||"（无）")}</p></div>`).join("")}</div>`}function saveCurrent(){const r=getRound(currentRoundId);if(!r||currentMode!=="answer")return;const q=r.questions[currentIndex];if(!q)return;const a=document.getElementById("answerInput"),s=document.getElementById("selfInput");if(a)q.userAnswer=a.value;if(s)q.selfCheck=s.value;q.updatedAt=now();r.updatedAt=now();save()}let softTimer=null;function saveCurrentSoft(){clearTimeout(softTimer);softTimer=setTimeout(()=>{saveCurrent();renderRounds()},300)}
+function renderAnswerMode(q,total){if(!q)return"";const r=getRound(currentRoundId);return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':(x.userAnswer||"").trim()?'answered':'unanswered'}" onclick="submitHint='';saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div><div class="card answer-card"><div class="meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div><div class="question-title">${esc(q.prompt)}</div><label>你的英文作答</label><div id="answerInput" class="answer-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="在这里输入你的英文答案" oninput="saveCurrentSoft()">${esc(q.userAnswer)}</div><label>一筛 / 自检（可选）</label><div id="selfInput" class="self-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="自己先复盘一遍：可能错在哪？想确认什么？" oninput="saveCurrentSoft()">${esc(q.selfCheck)}</div><details class="reference-block"><summary>显示参考答案</summary><div class="reference-content"><div class="reference-answer">${esc(q.reference)}</div>${q.phonetic?`<div class="reference-phonetic">${esc(q.phonetic)}</div>`:""}</div></details><div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div></div>`}
+function renderListMode(r){return `<div class="card">${r.questions.map((q,i)=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>第 ${i+1} 题</b><p>${esc(q.prompt)}</p><p class="small">Heron 作答：${esc(q.userAnswer||"（未作答）")}</p><p class="small">一筛：${esc(q.selfCheck||"（无）")}</p></div>`).join("")}</div>`}function readEditorValue(el){if(!el)return"";if(typeof el.value==="string")return el.value;return (el.innerText||el.textContent||"").replace(/\u00a0/g," ").trim()}function saveCurrent(){const r=getRound(currentRoundId);if(!r||currentMode!=="answer")return;const q=r.questions[currentIndex];if(!q)return;const a=document.getElementById("answerInput"),s=document.getElementById("selfInput");if(a)q.userAnswer=readEditorValue(a);if(s)q.selfCheck=readEditorValue(s);q.updatedAt=now();r.updatedAt=now();save()}let softTimer=null;function saveCurrentSoft(){clearTimeout(softTimer);softTimer=setTimeout(()=>{saveCurrent();renderRounds()},300)}
 function finishAnswering(){
   saveCurrent();
   const r=getRound(currentRoundId);
