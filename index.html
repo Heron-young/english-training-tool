@@ -1428,6 +1428,368 @@ body::after{
   }
 }
 
+
+/* v0.9 到位版：晨雾液态玻璃材料系统，不改版本号 */
+:root{
+  --mist-0:#fbf8fc;
+  --mist-1:#f2f4fb;
+  --mist-2:#e9eff9;
+  --mist-3:#dfe8f7;
+  --air-blue:rgba(142,175,229,.34);
+  --air-violet:rgba(190,194,235,.20);
+  --air-pink:rgba(248,226,236,.18);
+  --glass-blur:74px;
+  --glass-sat:260%;
+  --liquid-main:#8AA8C5;
+  --liquid-main-strong:#7899BC;
+  --liquid-text:#181A1F;
+  --liquid-muted:rgba(78,86,98,.60);
+  --liquid-shadow:rgba(86,104,142,.14);
+}
+
+/* 背景变成真正给玻璃“反射”的晨雾环境 */
+body{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.98), rgba(255,255,255,.34) 22%, transparent 52%),
+    radial-gradient(circle at 15% 82%, var(--air-blue), rgba(142,175,229,.10) 30%, transparent 58%),
+    radial-gradient(circle at 62% 74%, var(--air-violet), rgba(190,194,235,.06) 30%, transparent 58%),
+    radial-gradient(circle at 36% 26%, var(--air-pink), rgba(248,226,236,.05) 22%, transparent 48%),
+    linear-gradient(180deg, var(--mist-0) 0%, var(--mist-1) 34%, var(--mist-2) 68%, var(--mist-3) 100%) !important;
+  background-attachment:fixed !important;
+}
+
+/* 慢速雾层：让玻璃后面有“空气流动”，不是死背景 */
+body::before{
+  content:"" !important;
+  position:fixed !important;
+  inset:-25% !important;
+  z-index:-3 !important;
+  pointer-events:none !important;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,255,255,.96), transparent 24%),
+    radial-gradient(circle at 18% 86%, rgba(153,184,232,.22), transparent 26%),
+    radial-gradient(circle at 82% 24%, rgba(214,211,240,.16), transparent 24%),
+    radial-gradient(circle at 40% 20%, rgba(250,232,240,.13), transparent 22%),
+    conic-gradient(from 210deg at 50% 50%, rgba(255,255,255,.72), rgba(191,207,237,.16), rgba(247,232,239,.13), rgba(176,194,231,.16), rgba(255,255,255,.70)) !important;
+  filter:blur(115px) !important;
+  opacity:1 !important;
+  animation:mistDrift 18s ease-in-out infinite alternate;
+}
+
+body::after{
+  content:"" !important;
+  position:fixed !important;
+  inset:0 !important;
+  z-index:-2 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.18), transparent 38%, rgba(255,255,255,.07) 66%, transparent),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), transparent 58%) !important;
+  opacity:.26 !important;
+  animation:mistGlow 22s ease-in-out infinite alternate;
+}
+
+@keyframes mistDrift{
+  0%{transform:translate3d(-1.5%,0,0) scale(1)}
+  50%{transform:translate3d(1.8%,-1.2%,0) scale(1.035)}
+  100%{transform:translate3d(-.5%,1.1%,0) scale(1.015)}
+}
+
+@keyframes mistGlow{
+  0%{opacity:.18}
+  100%{opacity:.32}
+}
+
+@media (prefers-reduced-motion: reduce){
+  body::before, body::after{
+    animation:none !important;
+  }
+}
+
+/* 顶部、普通卡片弱化，避免抢作答区 */
+.top{
+  background:rgba(247,248,252,.18) !important;
+  border-bottom:0 !important;
+  box-shadow:0 14px 40px rgba(86,104,142,.045) !important;
+}
+
+.card:not(.answer-card){
+  background:rgba(255,255,255,.13) !important;
+  border-color:rgba(255,255,255,.16) !important;
+  box-shadow:
+    0 22px 58px rgba(86,104,142,.075),
+    inset 0 1px 0 rgba(255,255,255,.58),
+    inset 0 -1px 0 rgba(255,255,255,.04) !important;
+}
+
+/* 题号状态：当前 / 已作答 / 未作答 */
+.qnums button{
+  border:none !important;
+  background:rgba(255,255,255,.10) !important;
+  color:rgba(120,100,78,.62) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 8px 18px rgba(86,104,142,.035) !important;
+}
+
+.qnums button.answered{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.38), transparent 44%),
+    linear-gradient(145deg, rgba(181,205,226,.34), rgba(151,181,209,.18)),
+    rgba(255,255,255,.12) !important;
+  color:rgba(78,94,116,.82) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.48),
+    0 12px 22px rgba(125,159,198,.08) !important;
+}
+
+.qnums button.active{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.48), transparent 42%),
+    linear-gradient(145deg, rgba(157,187,219,.88), rgba(125,159,198,.78)),
+    rgba(138,168,197,.74) !important;
+  color:#fff !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.58),
+    0 16px 32px rgba(125,159,198,.22) !important;
+}
+
+/* 作答区：真正单一整体液态玻璃面 */
+.answer-card{
+  min-height:calc(100vh - 112px) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  border:none !important;
+  outline:none !important;
+  border-radius:36px !important;
+  padding:30px 30px 24px !important;
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255,255,255,.98), rgba(255,255,255,.24) 30%, transparent 58%),
+    radial-gradient(circle at 16% 94%, rgba(154,186,232,.19), transparent 42%),
+    radial-gradient(circle at 88% 20%, rgba(213,216,244,.14), transparent 34%),
+    radial-gradient(circle at 36% 18%, rgba(250,232,240,.11), transparent 26%),
+    linear-gradient(145deg, rgba(255,255,255,.22), rgba(236,242,251,.13) 42%, rgba(229,237,249,.08) 68%, rgba(255,255,255,.16)) !important;
+  box-shadow:
+    0 46px 130px var(--liquid-shadow),
+    0 14px 38px rgba(86,104,142,.045),
+    inset 0 1px 0 rgba(255,255,255,.78),
+    inset 0 -1px 0 rgba(255,255,255,.03) !important;
+  backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat)) !important;
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat)) !important;
+  overflow:hidden !important;
+  isolation:isolate !important;
+}
+
+.answer-card::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:-1 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.70), rgba(255,255,255,.10) 34%, rgba(216,230,246,.04) 62%, rgba(255,255,255,.16)),
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.76), transparent 28%),
+    radial-gradient(circle at 0% 100%, rgba(171,197,239,.12), transparent 32%),
+    radial-gradient(circle at 100% 0%, rgba(248,232,240,.07), transparent 28%) !important;
+  opacity:1 !important;
+}
+
+.answer-card::after{
+  display:none !important;
+}
+
+/* 作答区内部全部融为一体 */
+.answer-card .meta,
+.answer-card .question-title,
+.answer-card label,
+.answer-card .reference-block,
+.answer-card .reference-content{
+  text-align:center !important;
+}
+
+.answer-card .meta{
+  justify-content:center !important;
+  color:rgba(76,81,90,.48) !important;
+  margin-bottom:10px !important;
+}
+
+.answer-card .question-title{
+  max-width:94% !important;
+  margin:8px auto 26px !important;
+  font-size:24px !important;
+  line-height:1.42 !important;
+  color:var(--liquid-text) !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.45) !important;
+}
+
+.answer-card label{
+  display:block !important;
+  width:100% !important;
+  margin:18px 0 10px !important;
+  font-size:17px !important;
+  font-weight:720 !important;
+  color:rgba(24,26,30,.88) !important;
+}
+
+/* 最关键：textarea 不再是框，而是玻璃上的文字区域 */
+.answer-card textarea,
+.answer-card textarea:focus,
+.answer-card textarea:hover{
+  border:none !important;
+  outline:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  padding:8px 2px 10px !important;
+  text-align:center !important;
+  color:rgba(20,22,26,.92) !important;
+  line-height:1.65 !important;
+  resize:none !important;
+}
+
+.answer-card textarea::placeholder{
+  color:rgba(98,106,118,.32) !important;
+  text-align:center !important;
+}
+
+.answer-card .answer-input{
+  min-height:190px !important;
+  font-size:20px !important;
+}
+
+.answer-card .self-input{
+  min-height:112px !important;
+  font-size:18px !important;
+}
+
+/* 用极淡雾化层代替内部框线 */
+.answer-card #answerInput{
+  background-image:
+    radial-gradient(circle at 50% 5%, rgba(255,255,255,.14), transparent 46%),
+    linear-gradient(180deg, rgba(255,255,255,.032), transparent 74%) !important;
+  background-repeat:no-repeat !important;
+}
+
+.answer-card #selfInput{
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.085), transparent 50%),
+    linear-gradient(180deg, rgba(255,255,255,.020), transparent 74%) !important;
+  background-repeat:no-repeat !important;
+}
+
+/* 参考答案 + 音标：文字浮层，不是卡片 */
+.answer-card .reference-block{
+  margin:10px auto 0 !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+.answer-card .reference-block summary{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:6px !important;
+  padding:6px 10px !important;
+  border:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:rgba(86,92,102,.52) !important;
+  font-size:13px !important;
+  cursor:pointer !important;
+}
+
+.answer-card .reference-block summary::before{
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+.answer-card .reference-content{
+  margin:10px auto 0 !important;
+  max-width:76% !important;
+  color:rgba(54,58,64,.70) !important;
+  line-height:1.65 !important;
+}
+
+.answer-card .reference-answer{
+  font-size:15px !important;
+}
+
+.answer-card .reference-phonetic{
+  margin-top:6px !important;
+  font-size:13px !important;
+  color:rgba(86,92,102,.54) !important;
+  letter-spacing:.01em !important;
+}
+
+/* 底部按钮：液态胶囊，不要硬边框 */
+.answer-card .bottom-nav{
+  margin-top:auto !important;
+  padding-top:18px !important;
+}
+
+.answer-card .bottom-nav button{
+  border:none !important;
+  min-width:118px !important;
+  border-radius:999px !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.42), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,.16), rgba(229,238,249,.08)),
+    rgba(255,255,255,.08) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.48),
+    inset 0 -1px 0 rgba(255,255,255,.04),
+    0 18px 38px rgba(94,108,142,.065) !important;
+  backdrop-filter:blur(34px) saturate(220%) !important;
+  -webkit-backdrop-filter:blur(34px) saturate(220%) !important;
+}
+
+.answer-card .bottom-nav button.primary{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.50), transparent 42%),
+    linear-gradient(145deg, rgba(157,187,219,.86), rgba(125,159,198,.78)),
+    rgba(138,168,197,.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.56),
+    inset 0 -1px 0 rgba(255,255,255,.08),
+    0 18px 42px rgba(125,159,198,.18) !important;
+}
+
+.answer-card .bottom-nav button::before{
+  opacity:.34 !important;
+}
+
+@media(max-width:720px){
+  .answer-card{
+    padding:22px 18px 18px !important;
+    border-radius:30px !important;
+    min-height:calc(100vh - 108px) !important;
+  }
+
+  .answer-card .question-title{
+    font-size:22px !important;
+    max-width:100% !important;
+  }
+
+  .answer-card .answer-input{
+    min-height:166px !important;
+    font-size:19px !important;
+  }
+
+  .answer-card .self-input{
+    min-height:102px !important;
+    font-size:17px !important;
+  }
+
+  .answer-card .reference-content{
+    max-width:100% !important;
+  }
+}
+
 </style>
 </head>
 <body>
