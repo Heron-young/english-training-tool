@@ -2048,7 +2048,9 @@ function finishAnswering(){
   renderDetail();
 }
 function nextQ(){submitHint="";saveCurrent();const r=getRound(currentRoundId);if(currentIndex<r.questions.length-1)currentIndex++;renderDetail()}function prevQ(){submitHint="";saveCurrent();if(currentIndex>0)currentIndex--;renderDetail()}
-function submitForAI(){saveCurrent();const r=getRound(currentRoundId);if(!r)return;r.status="pending_ai";r.submittedAt=now();r.updatedAt=now();save();showExport()}function buildAIText(r){const done=answeredCount(r);return `训练轮次：${r.title}\nID：${r.id}\n创建日期：${fmtDate(r.createdAt)}\n提交日期：${fmtDate(r.submittedAt||now())}\n题目总数：${r.questions.length}\n已作答：${done}/${r.questions.length}\n当前状态：${statusLabel(r.status)}\n\n请对以下英语训练作答进行二筛：\n1. 判断 Heron 作答是否正确。\n2. 指出明显错误和最小必要修改。\n3. 不要超出当前学习阶段纠错。\n4. 优先保留原有表达，只做必要修正。\n5. 按题号输出结果。\n\n====== 作答内容 ======\n\n`+r.questions.map((q,i)=>`【第 ${i+1} 题】
+function submitForAI(){saveCurrent();const r=getRound(currentRoundId);if(!r)return;r.status="pending_ai";r.submittedAt=now();r.updatedAt=now();save();showExport()}function buildAIText(r){
+  const done=answeredCount(r);
+  const blocks=r.questions.map((q,i)=>`【第 ${i+1} 题】
 题目：${q.prompt}
 参考答案：${q.reference}
 类型：${q.type||"中译英"}
@@ -2058,9 +2060,9 @@ function submitForAI(){saveCurrent();const r=getRound(currentRoundId);if(!r)retu
 备注：${q.note||"（无）"}
 音标：${q.phonetic||"（无）"}
 Heron 作答：${q.userAnswer||"（未作答）"}
-Heron 一筛：${q.selfCheck||"（无）"}`).join("
-
-")}
+Heron 一筛：${q.selfCheck||"（无）"}`).join("\n\n");
+  return `训练轮次：${r.title}\nID：${r.id}\n创建日期：${fmtDate(r.createdAt)}\n提交日期：${fmtDate(r.submittedAt||now())}\n题目总数：${r.questions.length}\n已作答：${done}/${r.questions.length}\n当前状态：${statusLabel(r.status)}\n\n请对以下英语训练作答进行二筛：\n1. 判断 Heron 作答是否正确。\n2. 指出明显错误和最小必要修改。\n3. 不要超出当前学习阶段纠错。\n4. 优先保留原有表达，只做必要修正。\n5. 按题号输出结果。\n\n====== 作答内容 ======\n\n`+blocks;
+}
 function showExport(){saveCurrent();showPage("exportPage");const r=getRound(currentRoundId);if(!r)return;const text=buildAIText(r);document.getElementById("exportBox").innerHTML=`<h2>提交结果</h2><p class="sub">训练轮次：${esc(r.title)}</p><div class="compact-stats">${compactStats(r)}</div>${renderStatusControls(r)}<div class="card"><h3>导出给 AI 二筛</h3><div class="actions"><button class="primary" onclick="copyAIText()">复制</button><button onclick="downloadAIText()">下载 .txt</button><button onclick="copyQuestionText()">复制题库文本</button><button onclick="downloadQuestionText()">下载题库文本</button></div><textarea id="aiText" class="big" readonly>${esc(text)}</textarea></div>`}async function copyQuestionText(){
   const r=getRound(currentRoundId);
   if(!r)return;
