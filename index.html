@@ -397,6 +397,238 @@ body.immersive-mode main{padding:12px}
   color:#9A5A18;
 }
 
+
+/* 作答区整体冷色玻璃优化 */
+.answer-card{
+  min-height:calc(100vh - 126px);
+  display:flex;
+  flex-direction:column;
+  border:none;
+  background:
+    linear-gradient(135deg, rgba(228,241,252,.68) 0%, rgba(255,255,255,.40) 36%, rgba(226,239,250,.60) 100%),
+    radial-gradient(circle at 8% 0%, rgba(255,255,255,.72), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(210,233,248,.32), transparent 38%);
+  box-shadow:
+    0 26px 70px rgba(84,110,138,.14),
+    inset 0 1px 0 rgba(255,255,255,.82),
+    inset 0 -1px 0 rgba(255,255,255,.18);
+}
+.answer-card::before{
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.74), rgba(235,246,255,.18) 44%, rgba(218,236,248,.14) 68%, rgba(255,255,255,.26)),
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.54), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgba(214,235,247,.18), transparent 42%);
+  opacity:1;
+}
+.answer-card::after{display:none}
+.answer-card .meta{
+  justify-content:center;
+  text-align:center;
+  margin-bottom:8px;
+}
+.answer-card .question-title{
+  text-align:center;
+  margin:12px auto 22px;
+  max-width:92%;
+}
+.answer-card label{
+  width:100%;
+  text-align:center;
+  margin:14px 0 9px;
+}
+.answer-card textarea{
+  text-align:center;
+  border:none;
+  background:rgba(255,255,255,.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    0 12px 28px rgba(84,110,138,.06);
+}
+.answer-card textarea::placeholder{
+  text-align:center;
+}
+.answer-card .answer-input{
+  min-height:180px;
+}
+.answer-card .self-input{
+  min-height:120px;
+}
+.answer-card details{
+  margin-top:14px;
+  text-align:center;
+}
+.answer-card details summary{
+  display:inline-block;
+  color:rgba(70,70,76,.68);
+}
+.answer-card details p{
+  margin-top:10px;
+  text-align:center;
+  color:rgba(55,55,62,.80);
+}
+.answer-card .bottom-nav{
+  margin-top:auto;
+  padding-top:18px;
+}
+
+/* v0.9 作答区二次精修：输入框、参考答案、底部按钮 */
+.answer-card{
+  padding:20px;
+}
+
+.answer-card textarea{
+  border:0;
+  outline:0;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.28), rgba(232,244,252,.16)),
+    rgba(255,255,255,.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.54),
+    inset 0 -1px 0 rgba(255,255,255,.10),
+    0 10px 30px rgba(84,110,138,.045);
+  backdrop-filter:blur(30px) saturate(190%);
+  -webkit-backdrop-filter:blur(30px) saturate(190%);
+}
+
+.answer-card textarea:focus{
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.38), rgba(232,244,252,.22)),
+    rgba(255,255,255,.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.62),
+    inset 0 -1px 0 rgba(255,255,255,.12),
+    0 0 0 4px rgba(79,154,145,.08),
+    0 14px 34px rgba(84,110,138,.07);
+}
+
+.answer-card label{
+  color:rgba(28,28,30,.88);
+  font-weight:680;
+  letter-spacing:.01em;
+}
+
+.answer-card .meta{
+  color:rgba(70,70,76,.58);
+}
+
+.answer-card details{
+  width:min(380px,100%);
+  margin:16px auto 0;
+  border-radius:15px;
+  background:rgba(255,255,255,.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.46),
+    inset 0 1px 0 rgba(255,255,255,.58),
+    0 10px 26px rgba(84,110,138,.045);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  overflow:hidden;
+}
+
+.answer-card details summary{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  list-style:none;
+  padding:10px 12px;
+  cursor:pointer;
+  font-size:13px;
+  color:rgba(70,70,76,.68);
+  user-select:none;
+}
+
+.answer-card details summary::-webkit-details-marker{
+  display:none;
+}
+
+.answer-card details summary::before{
+  content:"⌄";
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  background:rgba(255,255,255,.32);
+  color:rgba(70,70,76,.58);
+  transform:rotate(-90deg);
+  transition:transform .18s ease;
+}
+
+.answer-card details[open] summary::before{
+  transform:rotate(0deg);
+}
+
+.answer-card details p{
+  margin:0;
+  padding:0 14px 12px;
+  color:rgba(28,28,30,.72);
+  font-size:14px;
+  line-height:1.55;
+}
+
+.answer-card .bottom-nav button{
+  min-width:118px;
+  border-radius:18px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.42), rgba(232,244,252,.18)),
+    rgba(255,255,255,.24);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.62),
+    inset 0 1px 0 rgba(255,255,255,.72),
+    0 14px 34px rgba(84,110,138,.10);
+  backdrop-filter:blur(30px) saturate(190%);
+  -webkit-backdrop-filter:blur(30px) saturate(190%);
+}
+
+.answer-card .bottom-nav button.primary{
+  background:
+    linear-gradient(145deg, rgba(112,186,178,.86), rgba(68,145,136,.76)),
+    rgba(79,154,145,.74);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.48),
+    inset 0 1px 0 rgba(255,255,255,.62),
+    0 16px 36px rgba(79,154,145,.24);
+}
+
+.answer-card .bottom-nav button::before{
+  opacity:.72;
+}
+
+.answer-card .bottom-nav button:active{
+  transform:scale(.96) translateY(1px);
+}
+
+.answer-card .question-title{
+  text-shadow:0 1px 0 rgba(255,255,255,.42);
+}
+
+.answer-card .answer-input,
+.answer-card .self-input{
+  border-radius:18px;
+}
+
+@media(max-width:720px){
+  .answer-card{
+    padding:18px;
+  }
+  .answer-card details{
+    width:100%;
+  }
+  .answer-card .bottom-nav button{
+    min-width:106px;
+  }
+}
+
+@media(max-width:720px){
+  .answer-card{
+    min-height:calc(100vh - 118px);
+  }
+  .answer-card .answer-input{min-height:168px}
+  .answer-card .self-input{min-height:108px}
+}
+
 @media(max-width:720px){
   body.immersive-mode main{padding:10px}
   .immersive-shell{min-height:calc(100vh - 20px)}
