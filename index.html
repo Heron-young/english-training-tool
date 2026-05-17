@@ -1882,18 +1882,51 @@ body::after{
   }
 }
 
+
+/* 轻量字段升级：句型骨架 / 句型限制 / 备注 */
+.answer-card .question-info{
+  width:min(520px,100%);
+  margin:0 auto 14px;
+  display:grid;
+  gap:6px;
+  text-align:center;
+  color:rgba(70,78,92,.64);
+  font-size:13px;
+  line-height:1.45;
+}
+.answer-card .question-info-row{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.answer-card .question-info-row span{
+  color:rgba(92,100,112,.50);
+  font-weight:500;
+}
+.answer-card .question-info-row b{
+  color:rgba(42,48,58,.72);
+  font-weight:620;
+}
+@media(max-width:720px){
+  .answer-card .question-info{
+    font-size:12.5px;
+    margin-bottom:12px;
+  }
+}
+
 </style>
 </head>
 <body>
 <div class="app"><div class="top"><div class="header"><div class="logo" aria-label="Heron avatar"></div><div class="title"><h1>Heron · 英语训练平台</h1><p>English training platform</p></div><button class="ghost exit" onclick="location.reload()">退出</button></div><div class="nav"><button class="active" data-page="rounds">训练轮次</button><button data-page="newRound">新建</button><button data-page="pending">待 AI 二筛</button><button data-page="guide">说明</button></div></div>
 <main>
 <section id="rounds" class="page active"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div><h2>训练轮次</h2><p class="sub">选择一个轮次开始作答。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div><div id="roundList"></div></section>
-<section id="newRound" class="page"><h2>新建轮次</h2><p class="sub">一轮训练就是一个独立包：题目、作答、一筛、AI 二筛、日期和 ID 都会保留。</p><div class="card"><label>轮次标题</label><input id="newTitle" placeholder="例：第8轮｜回流压实 + 小作文轻输出"><label>题目文本</label><textarea id="newText" class="big" placeholder="推荐：一行一道题&#10;【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || found my keys || /aɪ faʊnd maɪ kiːz/&#10;【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/"></textarea><div class="actions"><button onclick="previewCreate()">预览识别</button><button id="createBtn" class="primary" onclick="createRound()" disabled>创建轮次</button></div></div><div id="createPreview"></div></section>
+<section id="newRound" class="page"><h2>新建轮次</h2><p class="sub">一轮训练就是一个独立包：题目、作答、一筛、AI 二筛、日期和 ID 都会保留。</p><div class="card"><label>轮次标题</label><input id="newTitle" placeholder="例：第8轮｜回流压实 + 小作文轻输出"><label>题目文本</label><textarea id="newText" class="big" placeholder="推荐：一行一道题&#10;【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || I + found + my keys || 只能使用一般过去时 || found my keys || /aɪ faʊnd maɪ kiːz/&#10;【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 主语 + be + doing + 宾语 || 保持现在进行时 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/"></textarea><div class="actions"><button onclick="previewCreate()">预览识别</button><button id="createBtn" class="primary" onclick="createRound()" disabled>创建轮次</button></div></div><div id="createPreview"></div></section>
 <section id="pending" class="page"><h2>待 AI 二筛区</h2><p class="sub">已提交的轮次结果包。复制内容粘贴给 ChatGPT 进行二筛。</p><div id="pendingList"></div></section>
-<section id="guide" class="page"><h2>说明</h2><div class="card"><h3>导入格式</h3><p class="sub">推荐一行一道题，用 <b>||</b> 分隔。</p><div class="preview">原题 || 参考答案 || 类型 || 阶段 || 备注 || 音标
+<section id="guide" class="page"><h2>说明</h2><div class="card"><h3>导入格式</h3><p class="sub">推荐一行一道题，用 <b>||</b> 分隔。</p><div class="preview">题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标
 
-【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || found my keys || /aɪ faʊnd maɪ kiːz/
-【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/</div></div><div class="card"><h3>完整备份</h3><p class="small">用于迁移全部轮次、作答、日期、ID 和状态。</p><div class="actions"><button onclick="downloadBackup()">下载完整备份</button><button onclick="copyBackup()">复制完整备份</button></div><label>粘贴完整备份</label><textarea id="backupIn" class="big" placeholder="粘贴完整备份文本"></textarea><button class="primary" onclick="importBackup()">导入完整备份</button></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
+【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || I + found + my keys || 只能使用一般过去时 || found my keys || /aɪ faʊnd maɪ kiːz/
+【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 主语 + be + doing + 宾语 || 保持现在进行时 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/</div></div><div class="card"><h3>完整备份</h3><p class="small">用于迁移全部轮次、作答、日期、ID 和状态。</p><div class="actions"><button onclick="downloadBackup()">下载完整备份</button><button onclick="copyBackup()">复制完整备份</button></div><label>粘贴完整备份</label><textarea id="backupIn" class="big" placeholder="粘贴完整备份文本"></textarea><button class="primary" onclick="importBackup()">导入完整备份</button></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
 <section id="detail" class="page"><div class="back" onclick="showPage('rounds')">← 返回列表</div><div id="detailBox"></div></section>
 <section id="exportPage" class="page"><div class="back" onclick="openRound(currentRoundId)">← 返回轮次</div><div id="exportBox"></div></section>
 </main></div>
@@ -1905,9 +1938,40 @@ function statusClass(s){return{answering:"gray",first_screen:"gold",pending_ai:"
 function statusOrder(s){return{answering:0,first_screen:1,pending_ai:2,ai_done:3,reviewed:4,notion_done:5,done:5}[s]||0}
 function setRoundStatus(id,status){const r=getRound(id);if(!r)return;r.status=status;r.updatedAt=now();if(status==="first_screen")r.firstScreenAt=now();if(status==="pending_ai")r.submittedAt=now();if(status==="ai_done")r.aiDoneAt=now();if(status==="reviewed")r.reviewedAt=now();if(status==="notion_done"||status==="done")r.notionDoneAt=now();save();if(currentRoundId===id){renderDetail()}else{renderRounds()}}
 function renderStatusControls(r){const steps=[["first_screen","一筛完成"],["pending_ai","待 AI 二筛"],["ai_done","AI 已二筛"],["reviewed","Heron 已审核"],["notion_done","已沉淀 Notion"]];const cur=statusOrder(r.status);return `<div class="status-flow-label">流转状态</div><div class="status-flow">${steps.map(([key,label])=>`<button class="${r.status===key?'active':statusOrder(key)<cur?'done':''}" onclick="event.stopPropagation();setRoundStatus('${r.id}','${key}')">${label}</button>`).join("")}</div>`}function answeredCount(r){return r.questions.filter(q=>(q.userAnswer||"").trim()).length}function compactStats(r){const total=r.questions.length,done=answeredCount(r);return `总题 <b>${total}</b> · 已作答 <b>${done}</b> · 未作答 <b>${total-done}</b>`}
+function renderQuestionInfo(q){
+  const rows=[
+    ["类型",q.type],
+    ["阶段",q.stage],
+    ["句型骨架",q.pattern],
+    ["句型限制",q.constraint],
+    ["备注",q.note]
+  ].filter(x=>(x[1]||"").trim());
+  if(!rows.length)return "";
+  return `<div class="question-info">${rows.map(([k,v])=>`<div class="question-info-row"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>`;
+}
+function questionTextLine(q){
+  return [q.prompt||"",q.reference||"",q.type||"中译英",q.stage||"",q.pattern||"",q.constraint||"",q.note||"",q.phonetic||""]
+    .map(v=>String(v||"").replace(/\s+/g," ").trim())
+    .join(" || ");
+}
+function buildQuestionTextExport(r){
+  return r.questions.map(q=>questionTextLine(q)).join("\\n");
+}
 function renderRounds(){const box=document.getElementById("roundList");if(!state.rounds.length){box.innerHTML='<div class="empty">暂无训练轮次。点击“新建”开始。</div>';return}box.innerHTML=state.rounds.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(r=>`<div class="card round-card" onclick="openRound('${r.id}')"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${r.questions.length} 题</span><span>已作答 ${answeredCount(r)}/${r.questions.length}</span><span>${fmtDate(r.createdAt).split(" ")[0]}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div><button class="delete" onclick="event.stopPropagation();deleteRound('${r.id}')">⌫</button></div>`).join("")}
-function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();if(!raw)return[];let result=[];const lines=raw.split("\n").map(x=>x.trim()).filter(Boolean);for(const line of lines){if(line.includes("||")||line.includes("\t")){const parts=(line.includes("||")?line.split("||"):line.split("\t")).map(x=>x.trim());if(parts[0]&&parts[1])result.push({id:uid("q"),prompt:parts[0],reference:parts[1],type:parts[2]||"中译英",stage:parts[3]||"",note:parts[4]||"",phonetic:parts.slice(5).join(" | "),userAnswer:"",selfCheck:""})}}if(result.length)return result;const blocks=raw.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);for(const block of blocks){const l=block.split("\n").map(x=>x.trim()).filter(Boolean);if(l.length>=2)result.push({id:uid("q"),prompt:l[0],reference:l[1],type:"中译英",stage:"",note:l.slice(2).join(" / "),phonetic:"",userAnswer:"",selfCheck:""})}return result}
-function previewCreate(){pendingQuestions=parseQuestions(document.getElementById("newText").value);const box=document.getElementById("createPreview");const btn=document.getElementById("createBtn");if(!pendingQuestions.length){box.innerHTML='<div class="card notice">没有识别到题目。推荐格式：原题 || 参考答案 || 类型 || 阶段 || 备注 || 音标</div>';btn.disabled=true;return}box.innerHTML=`<div class="card"><h3>识别到 ${pendingQuestions.length} 题</h3>${pendingQuestions.slice(0,8).map((q,i)=>`<p><b>${i+1}. ${esc(q.prompt)}</b><br><span class="small">${esc(q.reference)}</span></p>`).join("")}${pendingQuestions.length>8?'<p class="small">只预览前 8 题。</p>':''}</div>`;btn.disabled=false}
+function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();if(!raw)return[];let result=[];const lines=raw.split("\n").map(x=>x.trim()).filter(Boolean);for(const line of lines){if(line.includes("||")||line.includes("\t")){const parts=(line.includes("||")?line.split("||"):line.split("\t")).map(x=>x.trim());if(parts[0]&&parts[1]){
+  let pattern="",constraint="",note="",phonetic="";
+  if(parts.length>=7){
+    pattern=parts[4]||"";
+    constraint=parts[5]||"";
+    note=parts[6]||"";
+    phonetic=parts.slice(7).join(" | ");
+  }else{
+    note=parts[4]||"";
+    phonetic=parts.slice(5).join(" | ");
+  }
+  result.push({id:uid("q"),prompt:parts[0],reference:parts[1],type:parts[2]||"中译英",stage:parts[3]||"",pattern,constraint,note,phonetic,userAnswer:"",selfCheck:""})
+}}}if(result.length)return result;const blocks=raw.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);for(const block of blocks){const l=block.split("\n").map(x=>x.trim()).filter(Boolean);if(l.length>=2)result.push({id:uid("q"),prompt:l[0],reference:l[1],type:"中译英",stage:"",pattern:"",constraint:"",note:l.slice(2).join(" / "),phonetic:"",userAnswer:"",selfCheck:""})}return result}
+function previewCreate(){pendingQuestions=parseQuestions(document.getElementById("newText").value);const box=document.getElementById("createPreview");const btn=document.getElementById("createBtn");if(!pendingQuestions.length){box.innerHTML='<div class="card notice">没有识别到题目。推荐格式：题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标</div>';btn.disabled=true;return}box.innerHTML=`<div class="card"><h3>识别到 ${pendingQuestions.length} 题</h3>${pendingQuestions.slice(0,8).map((q,i)=>`<p><b>${i+1}. ${esc(q.prompt)}</b><br><span class="small">${esc(q.reference)}</span></p>`).join("")}${pendingQuestions.length>8?'<p class="small">只预览前 8 题。</p>':''}</div>`;btn.disabled=false}
 function createRound(){if(!pendingQuestions.length)previewCreate();if(!pendingQuestions.length)return;const title=document.getElementById("newTitle").value.trim()||`训练轮次：${fmtDate(now())}`;const r={id:uid("tr"),title,createdAt:now(),updatedAt:now(),submittedAt:null,status:"answering",questions:pendingQuestions};state.rounds.push(r);save();document.getElementById("newTitle").value="";document.getElementById("newText").value="";document.getElementById("createPreview").innerHTML="";document.getElementById("createBtn").disabled=true;pendingQuestions=[];openRound(r.id)}function getRound(id){return state.rounds.find(r=>r.id===id)}function openRound(id){currentRoundId=id;currentIndex=0;currentMode="answer";showPage("detail");renderDetail()}function deleteRound(id){if(!confirm("确定删除这个训练轮次？"))return;state.rounds=state.rounds.filter(r=>r.id!==id);save();renderRounds()}
 function renderDetail(){
   const r=getRound(currentRoundId);
@@ -1960,7 +2024,7 @@ function renderDetail(){
       <button onclick="showExport()">查看导出文本</button>
     </div>`;
 }
-function renderAnswerMode(q,total){if(!q)return"";const r=getRound(currentRoundId);return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':(x.userAnswer||"").trim()?'answered':'unanswered'}" onclick="submitHint='';saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div><div class="card answer-card"><div class="meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div><div class="question-title">${esc(q.prompt)}</div><label>你的英文作答</label><div id="answerInput" class="answer-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="在这里输入你的英文答案" oninput="saveCurrentSoft()">${esc(q.userAnswer)}</div><label>一筛 / 自检（可选）</label><div id="selfInput" class="self-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="自己先复盘一遍：可能错在哪？想确认什么？" oninput="saveCurrentSoft()">${esc(q.selfCheck)}</div><details class="reference-block"><summary>显示参考答案</summary><div class="reference-content"><div class="reference-answer">${esc(q.reference)}</div>${q.phonetic?`<div class="reference-phonetic">${esc(q.phonetic)}</div>`:""}</div></details><div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div></div>`}
+function renderAnswerMode(q,total){if(!q)return"";const r=getRound(currentRoundId);return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':(x.userAnswer||"").trim()?'answered':'unanswered'}" onclick="submitHint='';saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div><div class="card answer-card"><div class="meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div><div class="question-title">${esc(q.prompt)}</div>${renderQuestionInfo(q)}<label>你的英文作答</label><div id="answerInput" class="answer-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="在这里输入你的英文答案" oninput="saveCurrentSoft()">${esc(q.userAnswer)}</div><label>一筛 / 自检（可选）</label><div id="selfInput" class="self-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="自己先复盘一遍：可能错在哪？想确认什么？" oninput="saveCurrentSoft()">${esc(q.selfCheck)}</div><details class="reference-block"><summary>显示参考答案</summary><div class="reference-content"><div class="reference-answer">${esc(q.reference)}</div>${q.phonetic?`<div class="reference-phonetic">${esc(q.phonetic)}</div>`:""}</div></details><div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div></div>`}
 function renderListMode(r){return `<div class="card">${r.questions.map((q,i)=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>第 ${i+1} 题</b><p>${esc(q.prompt)}</p><p class="small">Heron 作答：${esc(q.userAnswer||"（未作答）")}</p><p class="small">一筛：${esc(q.selfCheck||"（无）")}</p></div>`).join("")}</div>`}function readEditorValue(el){if(!el)return"";if(typeof el.value==="string")return el.value;return (el.innerText||el.textContent||"").replace(/\u00a0/g," ").trim()}function saveCurrent(){const r=getRound(currentRoundId);if(!r||currentMode!=="answer")return;const q=r.questions[currentIndex];if(!q)return;const a=document.getElementById("answerInput"),s=document.getElementById("selfInput");if(a)q.userAnswer=readEditorValue(a);if(s)q.selfCheck=readEditorValue(s);q.updatedAt=now();r.updatedAt=now();save()}let softTimer=null;function saveCurrentSoft(){clearTimeout(softTimer);softTimer=setTimeout(()=>{saveCurrent();renderRounds()},300)}
 function finishAnswering(){
   saveCurrent();
@@ -1984,8 +2048,31 @@ function finishAnswering(){
   renderDetail();
 }
 function nextQ(){submitHint="";saveCurrent();const r=getRound(currentRoundId);if(currentIndex<r.questions.length-1)currentIndex++;renderDetail()}function prevQ(){submitHint="";saveCurrent();if(currentIndex>0)currentIndex--;renderDetail()}
-function submitForAI(){saveCurrent();const r=getRound(currentRoundId);if(!r)return;r.status="pending_ai";r.submittedAt=now();r.updatedAt=now();save();showExport()}function buildAIText(r){const done=answeredCount(r);return `训练轮次：${r.title}\nID：${r.id}\n创建日期：${fmtDate(r.createdAt)}\n提交日期：${fmtDate(r.submittedAt||now())}\n题目总数：${r.questions.length}\n已作答：${done}/${r.questions.length}\n当前状态：${statusLabel(r.status)}\n\n请对以下英语训练作答进行二筛：\n1. 判断 Heron 作答是否正确。\n2. 指出明显错误和最小必要修改。\n3. 不要超出当前学习阶段纠错。\n4. 优先保留原有表达，只做必要修正。\n5. 按题号输出结果。\n\n====== 作答内容 ======\n\n`+r.questions.map((q,i)=>`【第 ${i+1} 题】\n原题：${q.prompt}\n参考答案：${q.reference}\nHeron 作答：${q.userAnswer||"（未作答）"}\nHeron 一筛：${q.selfCheck||"（无）"}\n类型：${q.type||"中译英"}\n阶段：${q.stage||"（无）"}\n备注：${q.note||"（无）"}\n音标：${q.phonetic||"（无）"}`).join("\n\n")}
-function showExport(){saveCurrent();showPage("exportPage");const r=getRound(currentRoundId);if(!r)return;const text=buildAIText(r);document.getElementById("exportBox").innerHTML=`<h2>提交结果</h2><p class="sub">训练轮次：${esc(r.title)}</p><div class="compact-stats">${compactStats(r)}</div>${renderStatusControls(r)}<div class="card"><h3>导出给 AI 二筛</h3><div class="actions"><button class="primary" onclick="copyAIText()">复制</button><button onclick="downloadAIText()">下载 .txt</button></div><textarea id="aiText" class="big" readonly>${esc(text)}</textarea></div>`}async function copyAIText(){const t=document.getElementById("aiText").value;try{await navigator.clipboard.writeText(t);alert("已复制。")}catch(e){alert("复制失败，请手动全选复制。")}}function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}function downloadAIText(){const r=getRound(currentRoundId);download(`${r.id}-AI二筛.txt`,buildAIText(r),"text/plain;charset=utf-8")}
+function submitForAI(){saveCurrent();const r=getRound(currentRoundId);if(!r)return;r.status="pending_ai";r.submittedAt=now();r.updatedAt=now();save();showExport()}function buildAIText(r){const done=answeredCount(r);return `训练轮次：${r.title}\nID：${r.id}\n创建日期：${fmtDate(r.createdAt)}\n提交日期：${fmtDate(r.submittedAt||now())}\n题目总数：${r.questions.length}\n已作答：${done}/${r.questions.length}\n当前状态：${statusLabel(r.status)}\n\n请对以下英语训练作答进行二筛：\n1. 判断 Heron 作答是否正确。\n2. 指出明显错误和最小必要修改。\n3. 不要超出当前学习阶段纠错。\n4. 优先保留原有表达，只做必要修正。\n5. 按题号输出结果。\n\n====== 作答内容 ======\n\n`+r.questions.map((q,i)=>`【第 ${i+1} 题】
+题目：${q.prompt}
+参考答案：${q.reference}
+类型：${q.type||"中译英"}
+阶段：${q.stage||"（无）"}
+句型骨架：${q.pattern||"（无）"}
+句型限制：${q.constraint||"（无）"}
+备注：${q.note||"（无）"}
+音标：${q.phonetic||"（无）"}
+Heron 作答：${q.userAnswer||"（未作答）"}
+Heron 一筛：${q.selfCheck||"（无）"}`).join("
+
+")}
+function showExport(){saveCurrent();showPage("exportPage");const r=getRound(currentRoundId);if(!r)return;const text=buildAIText(r);document.getElementById("exportBox").innerHTML=`<h2>提交结果</h2><p class="sub">训练轮次：${esc(r.title)}</p><div class="compact-stats">${compactStats(r)}</div>${renderStatusControls(r)}<div class="card"><h3>导出给 AI 二筛</h3><div class="actions"><button class="primary" onclick="copyAIText()">复制</button><button onclick="downloadAIText()">下载 .txt</button><button onclick="copyQuestionText()">复制题库文本</button><button onclick="downloadQuestionText()">下载题库文本</button></div><textarea id="aiText" class="big" readonly>${esc(text)}</textarea></div>`}async function copyQuestionText(){
+  const r=getRound(currentRoundId);
+  if(!r)return;
+  const text=buildQuestionTextExport(r);
+  try{await navigator.clipboard.writeText(text);alert("题库文本已复制。")}catch(e){alert("复制失败，请手动复制。")}
+}
+function downloadQuestionText(){
+  const r=getRound(currentRoundId);
+  if(!r)return;
+  download(`${r.id}-题库文本.txt`,buildQuestionTextExport(r),"text/plain;charset=utf-8");
+}
+async function copyAIText(){const t=document.getElementById("aiText").value;try{await navigator.clipboard.writeText(t);alert("已复制。")}catch(e){alert("复制失败，请手动全选复制。")}}function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}function downloadAIText(){const r=getRound(currentRoundId);download(`${r.id}-AI二筛.txt`,buildAIText(r),"text/plain;charset=utf-8")}
 function renderPending(){const arr=state.rounds.filter(r=>r.status==="pending_ai");const box=document.getElementById("pendingList");if(!arr.length){box.innerHTML='<div class="empty">暂无待 AI 二筛的训练轮次。</div>';return}box.innerHTML=arr.sort((a,b)=>new Date(b.submittedAt||b.updatedAt)-new Date(a.submittedAt||a.updatedAt)).map(r=>`<div class="card round-card" onclick="currentRoundId='${r.id}';showExport()"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${fmtDate(r.submittedAt||r.updatedAt)}</span><span>已作答 ${answeredCount(r)}/${r.questions.length}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div></div>`).join("")}function backupText(){return"HERON_ENGLISH_TOOL_BACKUP_V04\n"+btoa(unescape(encodeURIComponent(JSON.stringify(state))))}function downloadBackup(){download(`Heron英语训练完整备份-${Date.now()}.txt`,backupText(),"text/plain;charset=utf-8")}async function copyBackup(){try{await navigator.clipboard.writeText(backupText());alert("完整备份已复制。")}catch(e){alert("复制失败，请下载备份。")}}function importBackup(){const raw=document.getElementById("backupIn").value.trim();if(!raw.startsWith("HERON_ENGLISH_TOOL_BACKUP_V04")){alert("不是 v0.4 完整备份。");return}if(!confirm("导入完整备份会覆盖当前数据，确定继续？"))return;try{const payload=raw.split("\n").slice(1).join("").trim();state=JSON.parse(decodeURIComponent(escape(atob(payload))));save();load();showPage("rounds");alert("导入完成。")}catch(e){alert("导入失败。")}}
 load();
 </script>
