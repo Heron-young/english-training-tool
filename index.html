@@ -1915,6 +1915,116 @@ body::after{
   }
 }
 
+
+/* 修复：移动端训练轮次卡片删除按钮被挤出/裁切 */
+#roundList .card,
+#rounds .card,
+#pendingList .card,
+#pending .card{
+  position:relative !important;
+  padding-right:64px !important;
+  overflow:visible !important;
+}
+
+#roundList .card h3,
+#rounds .card h3,
+#pendingList .card h3,
+#pending .card h3,
+#roundList .card .title,
+#rounds .card .title,
+#pendingList .card .title,
+#pending .card .title{
+  min-width:0 !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  padding-right:8px !important;
+}
+
+#roundList .card > div,
+#rounds .card > div,
+#pendingList .card > div,
+#pending .card > div{
+  min-width:0 !important;
+}
+
+.round-delete-btn,
+#roundList .card button[onclick*="delete"],
+#rounds .card button[onclick*="delete"],
+#pendingList .card button[onclick*="delete"],
+#pending .card button[onclick*="delete"],
+#roundList .card button[onclick*="remove"],
+#rounds .card button[onclick*="remove"],
+#pendingList .card button[onclick*="remove"],
+#pending .card button[onclick*="remove"],
+#roundList .card button[onclick*="del"],
+#rounds .card button[onclick*="del"],
+#pendingList .card button[onclick*="del"],
+#pending .card button[onclick*="del"]{
+  position:absolute !important;
+  top:18px !important;
+  right:16px !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  max-width:34px !important;
+  padding:0 !important;
+  margin:0 !important;
+  flex:0 0 34px !important;
+  flex-shrink:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border:none !important;
+  border-radius:999px !important;
+  z-index:8 !important;
+  line-height:1 !important;
+  font-size:17px !important;
+  color:rgba(60,60,67,.68) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.55), transparent 45%),
+    linear-gradient(145deg, rgba(255,255,255,.28), rgba(230,238,249,.12)),
+    rgba(255,255,255,.20) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.58),
+    inset 0 -1px 0 rgba(255,255,255,.08),
+    0 10px 24px rgba(86,104,142,.07) !important;
+  backdrop-filter:blur(22px) saturate(190%) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(190%) !important;
+}
+
+@media(max-width:720px){
+  #roundList .card,
+  #rounds .card,
+  #pendingList .card,
+  #pending .card{
+    padding-right:58px !important;
+  }
+
+  .round-delete-btn,
+  #roundList .card button[onclick*="delete"],
+  #rounds .card button[onclick*="delete"],
+  #pendingList .card button[onclick*="delete"],
+  #pending .card button[onclick*="delete"],
+  #roundList .card button[onclick*="remove"],
+  #rounds .card button[onclick*="remove"],
+  #pendingList .card button[onclick*="remove"],
+  #pending .card button[onclick*="remove"],
+  #roundList .card button[onclick*="del"],
+  #rounds .card button[onclick*="del"],
+  #pendingList .card button[onclick*="del"],
+  #pending .card button[onclick*="del"]{
+    top:16px !important;
+    right:14px !important;
+    width:32px !important;
+    height:32px !important;
+    min-width:32px !important;
+    max-width:32px !important;
+    font-size:16px !important;
+  }
+}
+
 </style>
 </head>
 <body>
