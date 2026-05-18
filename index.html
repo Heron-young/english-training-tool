@@ -2198,6 +2198,203 @@ main{padding-top:18px}
   line-height:1.45;
 }
 
+
+/* ===== V0.9 精修：做题区降噪 / 自检错因合并 ===== */
+.refined-answer-card{
+  padding-top:22px !important;
+}
+.refined-answer-card .compact-question-meta{
+  margin-bottom:8px !important;
+  font-size:13px !important;
+  opacity:.78;
+}
+.refined-answer-card .question-title{
+  margin:8px auto 12px !important;
+  font-size:23px !important;
+}
+.refined-answer-card .question-hint{
+  width:min(520px,100%);
+  margin:0 auto 12px !important;
+  text-align:center;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+.refined-answer-card .question-hint summary{
+  list-style:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:5px 8px;
+  border-radius:999px;
+  color:rgba(82,88,98,.48) !important;
+  font-size:12px !important;
+  background:rgba(255,255,255,.12) !important;
+}
+.refined-answer-card .question-hint summary::-webkit-details-marker{display:none}
+.refined-answer-card .question-hint summary::before{
+  content:"›";
+  display:inline-block !important;
+  width:auto !important;
+  height:auto !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:rotate(0deg);
+  transition:transform .14s ease;
+}
+.refined-answer-card .question-hint[open] summary::before{transform:rotate(90deg)}
+.refined-answer-card .question-hint summary em{
+  max-width:220px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-style:normal;
+  color:rgba(82,88,98,.42);
+}
+.refined-answer-card .question-info{
+  margin:9px auto 0 !important;
+  font-size:12px !important;
+  opacity:.86;
+  gap:4px !important;
+}
+.refined-answer-card label{
+  margin:14px 0 8px !important;
+  font-size:17px !important;
+}
+.refined-answer-card .answer-input.glass-editor{
+  min-height:150px !important;
+  font-size:19px !important;
+  padding-top:6px !important;
+}
+.review-panel{
+  width:min(620px,100%);
+  margin:14px auto 4px !important;
+  border:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  text-align:center;
+}
+.review-panel summary{
+  list-style:none;
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:8px 13px !important;
+  border-radius:999px;
+  color:rgba(34,38,44,.70) !important;
+  font-size:14px !important;
+  font-weight:720;
+  background:rgba(255,255,255,.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.44),
+    0 8px 18px rgba(94,108,142,.05) !important;
+}
+.review-panel summary::-webkit-details-marker{display:none}
+.review-panel summary::before{
+  content:"›";
+  display:inline-block !important;
+  width:auto !important;
+  height:auto !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:rotate(0deg);
+  transition:transform .14s ease;
+  color:rgba(82,88,98,.48);
+}
+.review-panel[open] summary::before{transform:rotate(90deg)}
+.review-panel summary em{
+  font-style:normal;
+  font-weight:600;
+  color:rgba(82,88,98,.46);
+  max-width:160px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.review-inner{
+  margin-top:10px;
+}
+.refined-answer-card .self-input.glass-editor{
+  min-height:58px !important;
+  font-size:15px !important;
+  line-height:1.5 !important;
+  color:rgba(42,48,58,.74) !important;
+  padding:6px 2px 4px !important;
+}
+.tag-fold{
+  margin:8px auto 0 !important;
+  border:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.tag-fold summary{
+  display:inline-flex !important;
+  padding:5px 9px !important;
+  font-size:12px !important;
+  font-weight:650 !important;
+  color:rgba(82,88,98,.46) !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.tag-fold summary em{
+  max-width:180px;
+  font-style:normal;
+  color:rgba(82,88,98,.42);
+}
+.refined-answer-card .tag-row{
+  justify-content:center;
+  gap:7px;
+  margin:9px auto 2px !important;
+  max-width:620px;
+}
+.refined-answer-card .tag-btn{
+  padding:7px 10px !important;
+  font-size:12px !important;
+  background:rgba(255,255,255,.24) !important;
+  border-color:rgba(255,255,255,.54) !important;
+  color:rgba(82,88,98,.62) !important;
+}
+.refined-answer-card .tag-btn.active{
+  color:#315f75 !important;
+  background:linear-gradient(145deg,rgba(180,215,239,.48),rgba(255,255,255,.30)) !important;
+  border-color:rgba(156,196,224,.58) !important;
+}
+.compact-reference{
+  margin-top:8px !important;
+}
+.compact-reference .reference-content{
+  margin-top:8px;
+}
+@media(max-width:720px){
+  .refined-answer-card{
+    padding:20px 18px 18px !important;
+  }
+  .refined-answer-card .question-title{
+    font-size:22px !important;
+    margin-bottom:10px !important;
+  }
+  .refined-answer-card .answer-input.glass-editor{
+    min-height:138px !important;
+    font-size:18px !important;
+  }
+  .refined-answer-card .self-input.glass-editor{
+    min-height:52px !important;
+    font-size:14.5px !important;
+  }
+  .review-panel summary{
+    font-size:13.5px !important;
+  }
+  .refined-answer-card .question-hint summary em,
+  .review-panel summary em,
+  .tag-fold summary em{
+    max-width:126px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2332,7 +2529,11 @@ function renderQuestionInfo(q){
     ["备注",q.note]
   ].filter(x=>(x[1]||"").trim());
   if(!rows.length)return "";
-  return `<div class="question-info">${rows.map(([k,v])=>`<div class="question-info-row"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>`;
+  const preview=(q.pattern||q.constraint||q.note||"").trim();
+  return `<details class="question-hint">
+    <summary><span>训练提示</span>${preview?`<em>${esc(preview)}</em>`:""}</summary>
+    <div class="question-info">${rows.map(([k,v])=>`<div class="question-info-row"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>
+  </details>`;
 }
 function questionTextLine(q){
   return [q.prompt||"",q.reference||"",q.type||"中译英",q.stage||"",q.pattern||"",q.constraint||"",q.note||"",q.phonetic||""]
@@ -2383,6 +2584,24 @@ function splitPipeLine(line){return String(line||"").split("|").map(x=>x.trim())
 function renderRoundFilterBar(){const box=document.getElementById("roundFilterBar");if(!box)return;const c=statusCount();box.innerHTML=`<div class="round-filter"><button class="status-chip ${roundStatusFilter==='all'?'active':''}" onclick="roundStatusFilter='all';renderRounds()">全部 ${c.all}</button>${STATUS_OPTIONS.map(([k,l])=>`<button class="status-chip ${roundStatusFilter===k?'active':''}" onclick="roundStatusFilter='${k}';renderRounds()">${l} ${c[k]||0}</button>`).join("")}</div>`}
 function statusMatch(r){if(roundStatusFilter==="all")return true;const s=(r.status==="done"?"notion_done":r.status)||"answering";if(roundStatusFilter==="answering")return s==="answering"||s==="first_screen";if(roundStatusFilter==="pending_ai")return s==="pending_ai"||s==="ai_done";return s===roundStatusFilter}
 function renderErrorTags(q){const active=Array.isArray(q.errorTags)?q.errorTags:[];return `<div class="tag-row">${ERROR_TAGS.map(t=>`<button type="button" class="tag-btn ${active.includes(t)?'active':''}" onclick="toggleErrorTag(${currentIndex},'${t}')">${t}</button>`).join("")}</div>`}
+function renderReviewPanel(q){
+  const count=Array.isArray(q.errorTags)?q.errorTags.length:0;
+  const hasSelf=(q.selfCheck||"").trim().length>0;
+  const shouldOpen=hasSelf||count>0;
+  return `<details class="review-panel" ${shouldOpen?"open":""}>
+    <summary>
+      <span>一筛 / 自检（可选）</span>
+      <em>${count?`错因 ${count}`:"可展开"}</em>
+    </summary>
+    <div class="review-inner">
+      <div id="selfInput" class="self-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="只记一句：可能错在哪？想确认什么？" oninput="saveCurrentSoft()">${esc(q.selfCheck)}</div>
+      <details class="tag-fold" ${count?"open":""}>
+        <summary><span>Heron 自标错因</span><em>${count?tagText(q):"展开多选"}</em></summary>
+        ${renderErrorTags(q)}
+      </details>
+    </div>
+  </details>`;
+}
 function toggleErrorTag(i,t){saveCurrent();const r=getRound(currentRoundId);if(!r||!r.questions[i])return;const q=r.questions[i];if(!Array.isArray(q.errorTags))q.errorTags=[];const idx=q.errorTags.indexOf(t);if(idx>=0)q.errorTags.splice(idx,1);else q.errorTags.push(t);q.updatedAt=now();r.updatedAt=now();save();renderDetail()}
 function tagText(q){return Array.isArray(q.errorTags)&&q.errorTags.length?q.errorTags.join(","):""}
 function tagHtml(q){return tagText(q)?`<span class="tag-inline">${q.errorTags.map(t=>`<span class="tag-mini">${esc(t)}</span>`).join("")}</span>`:""}
@@ -2472,7 +2691,24 @@ function renderDetail(){
       <button onclick="showExport()">查看导出文本</button>
     </div>`;
 }
-function renderAnswerMode(q,total){if(!q)return"";const r=getRound(currentRoundId);return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':(x.userAnswer||"").trim()?'answered':'unanswered'}" onclick="submitHint='';saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div><div class="card answer-card"><div class="meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div><div class="question-title">${esc(q.prompt)}</div>${renderQuestionInfo(q)}<label>你的英文作答</label><div id="answerInput" class="answer-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="在这里输入你的英文答案" oninput="saveCurrentSoft()">${esc(q.userAnswer)}</div><label>一筛 / 自检（可选）</label><div id="selfInput" class="self-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="自己先复盘一遍：可能错在哪？想确认什么？" oninput="saveCurrentSoft()">${esc(q.selfCheck)}</div><label>Heron 自标错因（可选）</label>${renderErrorTags(q)}<details class="reference-block"><summary>显示参考答案</summary><div class="reference-content"><div class="reference-answer">${esc(q.reference)}</div>${q.phonetic?`<div class="reference-phonetic">${esc(q.phonetic)}</div>`:""}</div></details><div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div></div>`}
+function renderAnswerMode(q,total){
+  if(!q)return"";
+  const r=getRound(currentRoundId);
+  return `<div class="qnums">${r.questions.map((x,i)=>`<button class="${i===currentIndex?'active':(x.userAnswer||"").trim()?'answered':'unanswered'}" onclick="submitHint='';saveCurrent();currentIndex=${i};renderDetail()">${i+1}</button>`).join("")}</div>
+  <div class="card answer-card refined-answer-card">
+    <div class="meta compact-question-meta"><span>第 ${currentIndex+1} / ${total} 题</span><span>${esc(q.type||"中译英")}</span><span>${esc(q.stage||"")}</span></div>
+    <div class="question-title">${esc(q.prompt)}</div>
+    ${renderQuestionInfo(q)}
+    <label>你的英文作答</label>
+    <div id="answerInput" class="answer-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="在这里输入你的英文答案" oninput="saveCurrentSoft()">${esc(q.userAnswer)}</div>
+    ${renderReviewPanel(q)}
+    <details class="reference-block compact-reference">
+      <summary>显示参考答案</summary>
+      <div class="reference-content"><div class="reference-answer">${esc(q.reference)}</div>${q.phonetic?`<div class="reference-phonetic">${esc(q.phonetic)}</div>`:""}</div>
+    </details>
+    <div class="bottom-nav"><button onclick="prevQ()">‹ 上一题</button>${currentIndex===total-1?`<button class="primary" onclick="finishAnswering()">提交</button>`:`<button class="primary" onclick="nextQ()">下一题 ›</button>`}</div>
+  </div>`;
+}
 function renderListMode(r){return `<div class="card">${r.questions.map((q,i)=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>第 ${i+1} 题</b><p>${esc(q.prompt)}</p><p class="small">Heron 作答：${esc(q.userAnswer||"（未作答）")}</p><p class="small">一筛：${esc(q.selfCheck||"（无）")}</p><p class="small">错因：${tagHtml(q)||"（无）"}</p></div>`).join("")}</div>`}function readEditorValue(el){if(!el)return"";if(typeof el.value==="string")return el.value;return (el.innerText||el.textContent||"").replace(/\u00a0/g," ").trim()}function saveCurrent(){const r=getRound(currentRoundId);if(!r||currentMode!=="answer")return;const q=r.questions[currentIndex];if(!q)return;const a=document.getElementById("answerInput"),s=document.getElementById("selfInput");if(a)q.userAnswer=readEditorValue(a);if(s)q.selfCheck=readEditorValue(s);q.updatedAt=now();r.updatedAt=now();save()}let softTimer=null;function saveCurrentSoft(){clearTimeout(softTimer);softTimer=setTimeout(()=>{saveCurrent();renderRounds()},300)}
 function finishAnswering(){
   saveCurrent();
