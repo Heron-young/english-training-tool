@@ -2031,12 +2031,11 @@ body::after{
 <div class="app"><div class="top"><div class="header"><div class="logo" aria-label="Heron avatar"></div><div class="title"><h1>Heron · 英语训练平台</h1><p>English training platform</p></div><button class="ghost exit" onclick="location.reload()">退出</button></div><div class="nav"><button class="active" data-page="rounds">训练轮次</button><button data-page="newRound">新建</button><button data-page="pending">待 AI 二筛</button><button data-page="guide">说明</button></div></div>
 <main>
 <section id="rounds" class="page active"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div><h2>训练轮次</h2><p class="sub">选择一个轮次开始作答。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div><div id="roundList"></div></section>
-<section id="newRound" class="page"><h2>新建轮次</h2><p class="sub">一轮训练就是一个独立包：题目、作答、一筛、AI 二筛、日期和 ID 都会保留。</p><div class="card"><label>轮次标题</label><input id="newTitle" placeholder="例：第8轮｜回流压实 + 小作文轻输出"><label>题目文本</label><textarea id="newText" class="big" placeholder="推荐：一行一道题&#10;【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || I + found + my keys || 只能使用一般过去时 || found my keys || /aɪ faʊnd maɪ kiːz/&#10;【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 主语 + be + doing + 宾语 || 保持现在进行时 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/"></textarea><div class="actions"><button onclick="previewCreate()">预览识别</button><button id="createBtn" class="primary" onclick="createRound()" disabled>创建轮次</button></div></div><div id="createPreview"></div></section>
+<section id="newRound" class="page"><h2>新建轮次</h2><p class="sub">一轮训练就是一个独立包：题目、作答、一筛、AI 二筛、日期和 ID 都会保留。</p><div class="card"><label>轮次标题</label><input id="newTitle" placeholder="例：第8轮｜回流压实 + 小作文轻输出"><label>题目文本 / HEQ1 出题包</label><textarea id="newText" class="big" placeholder="推荐：粘贴 HEQ1 出题包，或一行一道题&#10;【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || I + found + my keys || 只能使用一般过去时 || found my keys || /aɪ faʊnd maɪ kiːz/&#10;【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 主语 + be + doing + 宾语 || 保持现在进行时 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/"></textarea><div class="actions"><button onclick="previewCreate()">预览识别</button><button id="createBtn" class="primary" onclick="createRound()" disabled>创建轮次</button></div></div><div id="createPreview"></div></section>
 <section id="pending" class="page"><h2>待 AI 二筛区</h2><p class="sub">已提交的轮次结果包。复制内容粘贴给 ChatGPT 进行二筛。</p><div id="pendingList"></div></section>
-<section id="guide" class="page"><h2>说明</h2><div class="card"><h3>导入格式</h3><p class="sub">推荐一行一道题，用 <b>||</b> 分隔。</p><div class="preview">题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标
-
-【连词成句】 found / I / my keys || I found my keys. || 连词成句 || 第8轮 || I + found + my keys || 只能使用一般过去时 || found my keys || /aɪ faʊnd maɪ kiːz/
-【拆分】 They are holding a meeting. || They are / holding / a meeting. || 拆分 || 第8轮 || 主语 + be + doing + 宾语 || 保持现在进行时 || 现在进行时 || /ðeɪ ɑːr ˈhoʊldɪŋ ə ˈmiːtɪŋ/</div></div><div class="card"><h3>完整备份</h3><p class="small">用于迁移全部轮次、作答、日期、ID 和状态。新版备份为可读 JSON，并兼容旧版编码备份。</p><div class="actions"><button onclick="downloadBackup()">下载完整备份</button><button onclick="copyBackup()">复制完整备份</button></div><label>粘贴完整备份</label><textarea id="backupIn" class="big" placeholder="粘贴完整备份：支持新版 JSON，也兼容旧版 V04 编码文本"></textarea><button class="primary" onclick="importBackup()">导入完整备份</button></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
+<section id="guide" class="page"><h2>说明</h2><div class="card"><h3>HEQ1｜出题包导入</h3><p class="sub">英语助手出题后，推荐直接粘贴 HEQ1。内容完整，但比长篇说明短。</p><div class="preview">HEQ1
+1|题目|参考答案|类型|阶段|句型骨架|句型限制|备注|音标
+2|题目|参考答案|ce|S18|need to do|只用 need to do||/niːd tuː/</div><p class="small">也继续兼容旧格式：题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标</p></div><div class="card"><h3>HEB1E｜设备备份包</h3><p class="small">用于 iPhone / Android / Windows 之间迁移全部轮次、作答、日期、ID、状态。默认复制 HEB1E 短包；仍兼容旧 JSON 备份。</p><div class="actions"><button class="primary" onclick="copyHEB1EBackup()">复制 HEB1E 备份包</button><button onclick="downloadHEB1EBackup()">下载 HEB1E</button><button onclick="downloadBackup()">下载 JSON 备份</button><button onclick="copyBackup()">复制 JSON 备份</button></div><label>粘贴 HEB1E / JSON 备份</label><textarea id="backupIn" class="big" placeholder="粘贴 HEB1E:xxxxx；也兼容 JSON / 旧版编码备份"></textarea><button class="primary" onclick="importBackup()">导入备份</button></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
 <section id="detail" class="page"><div class="back" onclick="showPage('rounds')">← 返回列表</div><div id="detailBox"></div></section>
 <section id="exportPage" class="page"><div class="back" onclick="openRound(currentRoundId)">← 返回轮次</div><div id="exportBox"></div></section>
 </main></div>
@@ -2065,10 +2064,36 @@ function questionTextLine(q){
     .join(" || ");
 }
 function buildQuestionTextExport(r){
-  return r.questions.map(q=>questionTextLine(q)).join("\\n");
+  return r.questions.map(q=>questionTextLine(q)).join("\n");
+}
+function buildHEQ1Text(r){
+  return "HEQ1\n"+r.questions.map((q,i)=>[
+    i+1,cleanPipeField(q.prompt),cleanPipeField(q.reference),typeNameToCode(q.type),cleanPipeField(q.stage),cleanPipeField(q.pattern),cleanPipeField(q.constraint),cleanPipeField(q.note),cleanPipeField(q.phonetic)
+  ].join("|").replace(/\|+$/," ").trim()).join("\n");
 }
 function renderRounds(){const box=document.getElementById("roundList");if(!state.rounds.length){box.innerHTML='<div class="empty">暂无训练轮次。点击“新建”开始。</div>';return}box.innerHTML=state.rounds.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(r=>`<div class="card round-card" onclick="openRound('${r.id}')"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${r.questions.length} 题</span><span>已作答 ${answeredCount(r)}/${r.questions.length}</span><span>${fmtDate(r.createdAt).split(" ")[0]}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div><button class="delete" onclick="event.stopPropagation();deleteRound('${r.id}')">⌫</button></div>`).join("")}
-function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();if(!raw)return[];let result=[];const lines=raw.split("\n").map(x=>x.trim()).filter(Boolean);for(const line of lines){if(line.includes("||")||line.includes("\t")){const parts=(line.includes("||")?line.split("||"):line.split("\t")).map(x=>x.trim());if(parts[0]&&parts[1]){
+function typeCodeToName(t){const m={ce:"中译英",ec:"英译中",sp:"拆分",od:"连词成句",rw:"改写",wr:"小作文"};return m[String(t||"").trim()]||String(t||"中译英").trim()||"中译英"}
+function typeNameToCode(t){const s=String(t||"").trim();const m={"中译英":"ce","英译中":"ec","拆分":"sp","连词成句":"od","改写":"rw","小作文":"wr"};return m[s]||s||"ce"}
+function cleanPipeField(v){return String(v||"").replace(/\r?\n/g," ").replace(/\|/g,"｜").trim()}
+function splitPipeLine(line){return String(line||"").split("|").map(x=>x.trim())}
+function parseHEQ1(raw){
+  const lines=String(raw||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean);
+  if(!lines.length||!/^HEQ1\b/i.test(lines[0]))return [];
+  const result=[];
+  for(const line of lines.slice(1)){
+    if(!line||line.startsWith("#"))continue;
+    let p=splitPipeLine(line);
+    if(/^\d+$/.test(p[0]||""))p=p.slice(1);
+    if(!p[0]||!p[1])continue;
+    result.push({
+      id:uid("q"),prompt:p[0]||"",reference:p[1]||"",type:typeCodeToName(p[2]||"ce"),stage:p[3]||"",pattern:p[4]||"",constraint:p[5]||"",note:p[6]||"",phonetic:p.slice(7).join(" | ")||"",userAnswer:"",selfCheck:""
+    });
+  }
+  return result;
+}
+function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();if(!raw)return[];
+  if(/^HEQ1\b/i.test(raw)){const heq=parseHEQ1(raw);if(heq.length)return heq;}
+  let result=[];const lines=raw.split("\n").map(x=>x.trim()).filter(Boolean);for(const line of lines){if(line.includes("||")||line.includes("\t")){const parts=(line.includes("||")?line.split("||"):line.split("\t")).map(x=>x.trim());if(parts[0]&&parts[1]){
   let pattern="",constraint="",note="",phonetic="";
   if(parts.length>=7){
     pattern=parts[4]||"";
@@ -2079,9 +2104,9 @@ function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();
     note=parts[4]||"";
     phonetic=parts.slice(5).join(" | ");
   }
-  result.push({id:uid("q"),prompt:parts[0],reference:parts[1],type:parts[2]||"中译英",stage:parts[3]||"",pattern,constraint,note,phonetic,userAnswer:"",selfCheck:""})
+  result.push({id:uid("q"),prompt:parts[0],reference:parts[1],type:typeCodeToName(parts[2]||"ce"),stage:parts[3]||"",pattern,constraint,note,phonetic,userAnswer:"",selfCheck:""})
 }}}if(result.length)return result;const blocks=raw.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);for(const block of blocks){const l=block.split("\n").map(x=>x.trim()).filter(Boolean);if(l.length>=2)result.push({id:uid("q"),prompt:l[0],reference:l[1],type:"中译英",stage:"",pattern:"",constraint:"",note:l.slice(2).join(" / "),phonetic:"",userAnswer:"",selfCheck:""})}return result}
-function previewCreate(){pendingQuestions=parseQuestions(document.getElementById("newText").value);const box=document.getElementById("createPreview");const btn=document.getElementById("createBtn");if(!pendingQuestions.length){box.innerHTML='<div class="card notice">没有识别到题目。推荐格式：题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标</div>';btn.disabled=true;return}box.innerHTML=`<div class="card"><h3>识别到 ${pendingQuestions.length} 题</h3>${pendingQuestions.slice(0,8).map((q,i)=>`<p><b>${i+1}. ${esc(q.prompt)}</b><br><span class="small">${esc(q.reference)}</span></p>`).join("")}${pendingQuestions.length>8?'<p class="small">只预览前 8 题。</p>':''}</div>`;btn.disabled=false}
+function previewCreate(){pendingQuestions=parseQuestions(document.getElementById("newText").value);const box=document.getElementById("createPreview");const btn=document.getElementById("createBtn");if(!pendingQuestions.length){box.innerHTML='<div class="card notice">没有识别到题目。推荐格式：HEQ1 出题包，或 题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标</div>';btn.disabled=true;return}box.innerHTML=`<div class="card"><h3>识别到 ${pendingQuestions.length} 题</h3>${pendingQuestions.slice(0,8).map((q,i)=>`<p><b>${i+1}. ${esc(q.prompt)}</b><br><span class="small">${esc(q.reference)}</span></p>`).join("")}${pendingQuestions.length>8?'<p class="small">只预览前 8 题。</p>':''}</div>`;btn.disabled=false}
 function createRound(){if(!pendingQuestions.length)previewCreate();if(!pendingQuestions.length)return;const title=document.getElementById("newTitle").value.trim()||`训练轮次：${fmtDate(now())}`;const r={id:uid("tr"),title,createdAt:now(),updatedAt:now(),submittedAt:null,status:"answering",questions:pendingQuestions};state.rounds.push(r);save();document.getElementById("newTitle").value="";document.getElementById("newText").value="";document.getElementById("createPreview").innerHTML="";document.getElementById("createBtn").disabled=true;pendingQuestions=[];openRound(r.id)}function getRound(id){return state.rounds.find(r=>r.id===id)}function openRound(id){currentRoundId=id;currentIndex=0;currentMode="answer";showPage("detail");renderDetail()}function deleteRound(id){if(!confirm("确定删除这个训练轮次？"))return;state.rounds=state.rounds.filter(r=>r.id!==id);save();renderRounds()}
 function renderDetail(){
   const r=getRound(currentRoundId);
@@ -2173,7 +2198,16 @@ Heron 作答：${q.userAnswer||"（未作答）"}
 Heron 一筛：${q.selfCheck||"（无）"}`).join("\n\n");
   return `训练轮次：${r.title}\nID：${r.id}\n创建日期：${fmtDate(r.createdAt)}\n提交日期：${fmtDate(r.submittedAt||now())}\n题目总数：${r.questions.length}\n已作答：${done}/${r.questions.length}\n当前状态：${statusLabel(r.status)}\n\n请对以下英语训练作答进行二筛：\n1. 判断 Heron 作答是否正确。\n2. 指出明显错误和最小必要修改。\n3. 不要超出当前学习阶段纠错。\n4. 优先保留原有表达，只做必要修正。\n5. 按题号输出结果。\n\n====== 作答内容 ======\n\n`+blocks;
 }
-function showExport(){saveCurrent();showPage("exportPage");const r=getRound(currentRoundId);if(!r)return;const text=buildAIText(r);document.getElementById("exportBox").innerHTML=`<h2>提交结果</h2><p class="sub">训练轮次：${esc(r.title)}</p><div class="compact-stats">${compactStats(r)}</div>${renderStatusControls(r)}<div class="card"><h3>导出给 AI 二筛</h3><div class="actions"><button class="primary" onclick="copyAIText()">复制</button><button onclick="downloadAIText()">下载 .txt</button><button onclick="copyQuestionText()">复制题库文本</button><button onclick="downloadQuestionText()">下载题库文本</button></div><textarea id="aiText" class="big" readonly>${esc(text)}</textarea></div>`}async function copyQuestionText(){
+function buildHER1Text(r){
+  const done=answeredCount(r);
+  const head=`HER1\nR:${cleanPipeField(r.title)}|${r.id}|${fmtDate(r.submittedAt||now()).split(" ")[0]}|${r.questions.length}|${done}`;
+  const lines=r.questions.map((q,i)=>[
+    i+1,cleanPipeField(q.prompt),cleanPipeField(q.reference),typeNameToCode(q.type),cleanPipeField(q.stage),cleanPipeField(q.pattern),cleanPipeField(q.constraint),cleanPipeField(q.userAnswer||""),cleanPipeField(q.selfCheck||"")
+  ].join("|"));
+  return head+"\n"+lines.join("\n");
+}
+function showExport(){saveCurrent();showPage("exportPage");const r=getRound(currentRoundId);if(!r)return;const text=buildHER1Text(r);document.getElementById("exportBox").innerHTML=`<h2>提交结果</h2><p class="sub">训练轮次：${esc(r.title)}</p><div class="compact-stats">${compactStats(r)}</div>${renderStatusControls(r)}<div class="card"><h3>HER1｜导出给 AI 二筛</h3><p class="small">短包格式：内容完整，减少英语助手上下文负担。</p><div class="actions"><button class="primary" onclick="copyHER1Text()">复制 HER1 二筛包</button><button onclick="downloadHER1Text()">下载 HER1</button><button onclick="copyAIText()">复制长版二筛文本</button><button onclick="copyHEQ1Text()">复制 HEQ1 题库包</button><button onclick="downloadHEQ1Text()">下载 HEQ1</button></div><textarea id="aiText" class="big" readonly>${esc(text)}</textarea></div>`}
+async function copyQuestionText(){
   const r=getRound(currentRoundId);
   if(!r)return;
   const text=buildQuestionTextExport(r);
@@ -2184,17 +2218,40 @@ function downloadQuestionText(){
   if(!r)return;
   download(`${r.id}-题库文本.txt`,buildQuestionTextExport(r),"text/plain;charset=utf-8");
 }
+async function copyHEQ1Text(){
+  const r=getRound(currentRoundId); if(!r)return;
+  try{await navigator.clipboard.writeText(buildHEQ1Text(r));alert("HEQ1 题库包已复制。")}catch(e){alert("复制失败，请手动复制。")}
+}
+function downloadHEQ1Text(){const r=getRound(currentRoundId);if(!r)return;download(`${r.id}-HEQ1题库包.txt`,buildHEQ1Text(r),"text/plain;charset=utf-8")}
+async function copyHER1Text(){
+  const r=getRound(currentRoundId); if(!r)return;
+  try{await navigator.clipboard.writeText(buildHER1Text(r));alert("HER1 二筛包已复制。")}catch(e){alert("复制失败，请手动全选复制。")}
+}
+function downloadHER1Text(){const r=getRound(currentRoundId);if(!r)return;download(`${r.id}-HER1二筛包.txt`,buildHER1Text(r),"text/plain;charset=utf-8")}
 async function copyAIText(){const t=document.getElementById("aiText").value;try{await navigator.clipboard.writeText(t);alert("已复制。")}catch(e){alert("复制失败，请手动全选复制。")}}function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}function downloadAIText(){const r=getRound(currentRoundId);download(`${r.id}-AI二筛.txt`,buildAIText(r),"text/plain;charset=utf-8")}
 function renderPending(){const arr=state.rounds.filter(r=>r.status==="pending_ai");const box=document.getElementById("pendingList");if(!arr.length){box.innerHTML='<div class="empty">暂无待 AI 二筛的训练轮次。</div>';return}box.innerHTML=arr.sort((a,b)=>new Date(b.submittedAt||b.updatedAt)-new Date(a.submittedAt||a.updatedAt)).map(r=>`<div class="card round-card" onclick="currentRoundId='${r.id}';showExport()"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${fmtDate(r.submittedAt||r.updatedAt)}</span><span>已作答 ${answeredCount(r)}/${r.questions.length}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div></div>`).join("")}
 function backupText(){return JSON.stringify({format:"HERON_ENGLISH_TOOL_BACKUP_V05",app:"Heron English Training Platform",createdAt:now(),state},null,2)}
 function downloadBackup(){download(`Heron英语训练完整备份-${Date.now()}.json`,backupText(),"application/json;charset=utf-8")}
-async function copyBackup(){try{await navigator.clipboard.writeText(backupText());alert("完整备份已复制。新版备份为可读 JSON，安卓/iPhone 互导更稳定。")}catch(e){alert("复制失败，请下载备份。")}}
+async function copyBackup(){try{await navigator.clipboard.writeText(backupText());alert("JSON 完整备份已复制。若跨设备粘贴过长，推荐使用 HEB1E 备份包。")}catch(e){alert("复制失败，请下载备份。")}}
+function compactRound(r){return [r.id||"",r.title||"",r.createdAt||"",r.updatedAt||"",r.submittedAt||"",r.status||"answering",r.firstScreenAt||"",r.aiDoneAt||"",r.reviewedAt||"",r.notionDoneAt||"",(r.questions||[]).map(q=>[q.id||"",q.prompt||"",q.reference||"",q.type||"",q.stage||"",q.pattern||"",q.constraint||"",q.note||"",q.phonetic||"",q.userAnswer||"",q.selfCheck||"",q.updatedAt||""])]}
+function expandRound(a){return {id:a[0]||uid("tr"),title:a[1]||"训练轮次",createdAt:a[2]||now(),updatedAt:a[3]||now(),submittedAt:a[4]||null,status:a[5]||"answering",firstScreenAt:a[6]||null,aiDoneAt:a[7]||null,reviewedAt:a[8]||null,notionDoneAt:a[9]||null,questions:(a[10]||[]).map(q=>({id:q[0]||uid("q"),prompt:q[1]||"",reference:q[2]||"",type:q[3]||"中译英",stage:q[4]||"",pattern:q[5]||"",constraint:q[6]||"",note:q[7]||"",phonetic:q[8]||"",userAnswer:q[9]||"",selfCheck:q[10]||"",updatedAt:q[11]||""}))}}
+function compactState(){return {v:1,t:"HEB1E",c:now(),r:(state.rounds||[]).map(compactRound)}}
+function b64urlEncodeUtf8(str){const bytes=new TextEncoder().encode(str);let bin="";const chunk=0x8000;for(let i=0;i<bytes.length;i+=chunk){bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk))}return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
+function b64urlDecodeUtf8(s){let t=String(s||"").trim().replace(/^HEB1E:/i,"").replace(/\s+/g,"").replace(/-/g,"+").replace(/_/g,"/");while(t.length%4)t+="=";const bin=atob(t);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder("utf-8").decode(bytes)}
+function buildHEB1EBackup(){return "HEB1E:"+b64urlEncodeUtf8(JSON.stringify(compactState()))}
+function splitHEB1E(text,size=1200){if(text.length<=size)return text;const head="HEB1E:";const payload=text.startsWith(head)?text.slice(head.length):text;const total=Math.ceil(payload.length/size);let out=[];for(let i=0;i<total;i++)out.push(`HEB1E-${i+1}/${total}:`+payload.slice(i*size,(i+1)*size));return out.join("\n")}
+async function copyHEB1EBackup(){try{await navigator.clipboard.writeText(splitHEB1E(buildHEB1EBackup()));alert("HEB1E 设备备份包已复制。可直接粘贴到另一台设备导入。") }catch(e){alert("复制失败，请下载 HEB1E。")}}
+function downloadHEB1EBackup(){download(`Heron英语训练-HEB1E设备备份-${Date.now()}.txt`,splitHEB1E(buildHEB1EBackup()),"text/plain;charset=utf-8")}
+function parseHEB1EBackup(raw){let text=normalizeBackupRaw(raw);if(/^HEB1E-\d+\/\d+:/im.test(text)){const parts=[];let total=0;text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).forEach(line=>{const m=line.match(/^HEB1E-(\d+)\/(\d+):(.+)$/i);if(m){parts[Number(m[1])-1]=m[3].trim();total=Number(m[2])}});if(parts.filter(Boolean).length!==total)throw new Error("HEB1E 分段不完整，请确认所有分段都已粘贴。");text="HEB1E:"+parts.join("")}
+ if(!/^HEB1E:/i.test(text))return null;const obj=JSON.parse(b64urlDecodeUtf8(text));if(!obj||obj.t!=="HEB1E"||!Array.isArray(obj.r))throw new Error("HEB1E 内容结构不正确。");return {rounds:obj.r.map(expandRound)}}
 function normalizeBackupRaw(raw){return String(raw||"").replace(/^\uFEFF/,"").replace(/[\u200B-\u200D\uFEFF]/g,"").replace(/[“”]/g,'"').replace(/[‘’]/g,"'").trim()}
 function tryParseJSON(text){try{return JSON.parse(text)}catch(e){return null}}
 function cleanBase64Text(text){let t=normalizeBackupRaw(text);const dataIndex=t.indexOf("base64,");if(dataIndex>=0)t=t.slice(dataIndex+7);const matches=t.match(/[A-Za-z0-9+/_=-]{40,}/g);if(matches&&matches.length)t=matches.sort((a,b)=>b.length-a.length)[0];t=t.replace(/\s+/g,"").replace(/-/g,"+").replace(/_/g,"/");while(t.length%4!==0)t+="=";return t}
 function decodeBase64Utf8(payload){try{const bin=atob(payload);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);if(window.TextDecoder)return new TextDecoder("utf-8").decode(bytes);let s="";bytes.forEach(b=>s+="%"+b.toString(16).padStart(2,"0"));return decodeURIComponent(s)}catch(e){try{return decodeURIComponent(escape(atob(payload)))}catch(e2){return null}}}
 function unwrapBackupObject(obj){if(!obj||typeof obj!=="object")return null;if(obj.state&&obj.state.rounds)return obj.state;if(obj.data&&obj.data.rounds)return obj.data;if(obj.payload&&obj.payload.rounds)return obj.payload;if(obj.backup&&obj.backup.rounds)return obj.backup;if(obj.rounds)return obj;if(Array.isArray(obj)){return{rounds:obj}}return null}
-function parseBackupText(raw){const original=normalizeBackupRaw(raw);if(!original)throw new Error("备份内容为空。");let text=original;if(/^HERON_ENGLISH_TOOL_BACKUP_V\d+/i.test(text)){text=text.split(/\r?\n/).slice(1).join("\n").trim();if(!text)throw new Error("只复制到了备份头，后面的内容为空。")}
+function parseBackupText(raw){const original=normalizeBackupRaw(raw);if(!original)throw new Error("备份内容为空。");
+const heb=parseHEB1EBackup(original);if(heb)return heb;
+let text=original;if(/^HERON_ENGLISH_TOOL_BACKUP_V\d+/i.test(text)){text=text.split(/\r?\n/).slice(1).join("\n").trim();if(!text)throw new Error("只复制到了备份头，后面的内容为空。")}
 let obj=tryParseJSON(text);let unwrapped=unwrapBackupObject(obj);if(unwrapped)return unwrapped;
 const first=text.indexOf("{");const last=text.lastIndexOf("}");if(first>=0&&last>first){obj=tryParseJSON(text.slice(first,last+1));unwrapped=unwrapBackupObject(obj);if(unwrapped)return unwrapped}
 const decoded=decodeBase64Utf8(cleanBase64Text(text));if(decoded){obj=tryParseJSON(decoded.trim());unwrapped=unwrapBackupObject(obj);if(unwrapped)return unwrapped;const fb=decoded.indexOf("{");const lb=decoded.lastIndexOf("}");if(fb>=0&&lb>fb){obj=tryParseJSON(decoded.slice(fb,lb+1));unwrapped=unwrapBackupObject(obj);if(unwrapped)return unwrapped}}
