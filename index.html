@@ -2025,6 +2025,19 @@ body::after{
   }
 }
 
+
+.mini-fold{
+  margin-top:14px;
+  padding:12px 0 0;
+  color:var(--sub);
+}
+.mini-fold summary{
+  cursor:pointer;
+  font-weight:700;
+  color:var(--sub);
+  padding:8px 0;
+}
+
 </style>
 </head>
 <body>
@@ -2035,7 +2048,7 @@ body::after{
 <section id="pending" class="page"><h2>待 AI 二筛区</h2><p class="sub">已提交的轮次结果包。复制内容粘贴给 ChatGPT 进行二筛。</p><div id="pendingList"></div></section>
 <section id="guide" class="page"><h2>说明</h2><div class="card"><h3>HEQ1｜出题包导入</h3><p class="sub">英语助手出题后，推荐直接粘贴 HEQ1。内容完整，但比长篇说明短。</p><div class="preview">HEQ1
 1|题目|参考答案|类型|阶段|句型骨架|句型限制|备注|音标
-2|题目|参考答案|ce|S18|need to do|只用 need to do||/niːd tuː/</div><p class="small">也继续兼容旧格式：题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标</p></div><div class="card"><h3>HEB1E｜设备备份包</h3><p class="small">用于 iPhone / Android / Windows 之间迁移全部轮次、作答、日期、ID、状态。默认复制 HEB1E 短包；仍兼容旧 JSON 备份。</p><div class="actions"><button class="primary" onclick="copyHEB1EBackup()">复制 HEB1E 备份包</button><button onclick="downloadHEB1EBackup()">下载 HEB1E</button><button onclick="downloadBackup()">下载 JSON 备份</button><button onclick="copyBackup()">复制 JSON 备份</button></div><label>粘贴 HEB1E / JSON 备份</label><textarea id="backupIn" class="big" placeholder="粘贴 HEB1E:xxxxx；也兼容 JSON / 旧版编码备份"></textarea><button class="primary" onclick="importBackup()">导入备份</button></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
+2|题目|参考答案|ce|S18|need to do|只用 need to do||/niːd tuː/</div><p class="small">也继续兼容旧格式：题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标</p></div><div class="card"><h3>设备流转｜HEB 文件备份</h3><p class="small">设备之间迁移全部轮次、作答、日期、ID、状态。主路径改为文件流转：下载 .heb → 另一台设备选择文件导入。不要再复制一大段文本。</p><div class="actions"><button class="primary" onclick="downloadHEBFile()">下载 .heb 备份文件</button><button onclick="document.getElementById('hebFileInput').click()">选择 .heb / JSON 导入</button><input id="hebFileInput" type="file" accept=".heb,.txt,.json,application/json,text/plain" style="display:none" onchange="importBackupFile(this.files&&this.files[0])"></div><p class="small">推荐流程：iPhone 下载 .heb → 用文件 / 隔空投送 / 本地传输工具发到 Android 或 Windows → 在这里选择文件导入。</p><details class="mini-fold"><summary>应急：文本导入 / 导出</summary><div class="actions"><button onclick="copyHEB1EBackup()">复制 HEB 文本包</button><button onclick="downloadHEB1EBackup()">下载 HEB 文本</button><button onclick="downloadBackup()">下载 JSON</button><button onclick="copyBackup()">复制 JSON</button></div><label>应急粘贴 HEB / JSON</label><textarea id="backupIn" class="big" placeholder="不推荐日常使用。仅在文件导入不可用时粘贴 HEB1E / JSON"></textarea><button onclick="importBackup()">导入文本备份</button></details></div><div class="data-note">数据保存在当前浏览器本地。iPhone、iPad、Windows 不会自动同步。建议主训练设备固定为 iPhone，Windows 负责生成题库。</div></section>
 <section id="detail" class="page"><div class="back" onclick="showPage('rounds')">← 返回列表</div><div id="detailBox"></div></section>
 <section id="exportPage" class="page"><div class="back" onclick="openRound(currentRoundId)">← 返回轮次</div><div id="exportBox"></div></section>
 </main></div>
@@ -2242,6 +2255,34 @@ function buildHEB1EBackup(){return "HEB1E:"+b64urlEncodeUtf8(JSON.stringify(comp
 function splitHEB1E(text,size=1200){if(text.length<=size)return text;const head="HEB1E:";const payload=text.startsWith(head)?text.slice(head.length):text;const total=Math.ceil(payload.length/size);let out=[];for(let i=0;i<total;i++)out.push(`HEB1E-${i+1}/${total}:`+payload.slice(i*size,(i+1)*size));return out.join("\n")}
 async function copyHEB1EBackup(){try{await navigator.clipboard.writeText(splitHEB1E(buildHEB1EBackup()));alert("HEB1E 设备备份包已复制。可直接粘贴到另一台设备导入。") }catch(e){alert("复制失败，请下载 HEB1E。")}}
 function downloadHEB1EBackup(){download(`Heron英语训练-HEB1E设备备份-${Date.now()}.txt`,splitHEB1E(buildHEB1EBackup()),"text/plain;charset=utf-8")}
+function downloadHEBFile(){
+  const text = buildHEB1EBackup();
+  download(`Heron英语训练-${Date.now()}.heb`, text, "application/octet-stream");
+}
+function importBackupFile(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(){
+    if(!confirm("导入备份文件会覆盖当前数据，确定继续？"))return;
+    try{
+      const parsed=parseBackupText(String(reader.result||""));
+      if(!parsed.rounds||!Array.isArray(parsed.rounds))throw new Error("备份中没有 rounds 训练轮次数组。");
+      state={rounds:parsed.rounds};
+      save();
+      load();
+      showPage("rounds");
+      alert(`导入完成：已恢复 ${state.rounds.length} 个训练轮次。`);
+    }catch(e){
+      alert("导入失败："+(e&&e.message?e.message:"未知错误"));
+    }finally{
+      const input=document.getElementById("hebFileInput");
+      if(input)input.value="";
+    }
+  };
+  reader.onerror=function(){alert("读取文件失败，请重新选择备份文件。")};
+  reader.readAsText(file);
+}
+
 function parseHEB1EBackup(raw){let text=normalizeBackupRaw(raw);if(/^HEB1E-\d+\/\d+:/im.test(text)){const parts=[];let total=0;text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).forEach(line=>{const m=line.match(/^HEB1E-(\d+)\/(\d+):(.+)$/i);if(m){parts[Number(m[1])-1]=m[3].trim();total=Number(m[2])}});if(parts.filter(Boolean).length!==total)throw new Error("HEB1E 分段不完整，请确认所有分段都已粘贴。");text="HEB1E:"+parts.join("")}
  if(!/^HEB1E:/i.test(text))return null;const obj=JSON.parse(b64urlDecodeUtf8(text));if(!obj||obj.t!=="HEB1E"||!Array.isArray(obj.r))throw new Error("HEB1E 内容结构不正确。");return {rounds:obj.r.map(expandRound)}}
 function normalizeBackupRaw(raw){return String(raw||"").replace(/^\uFEFF/,"").replace(/[\u200B-\u200D\uFEFF]/g,"").replace(/[“”]/g,'"').replace(/[‘’]/g,"'").trim()}
