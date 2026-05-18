@@ -2395,6 +2395,66 @@ main{padding-top:18px}
   }
 }
 
+
+/* ===== V0.9 精修：做题卡片高度缩短一半 =====
+   只改视觉高度，不动数据结构 / 保存逻辑 / HEQ1 / HER1 / .heb。
+*/
+.refined-answer-card.answer-card{
+  min-height: clamp(560px, 72vh, 680px) !important;
+  padding-bottom: 20px !important;
+}
+.refined-answer-card .answer-input.glass-editor{
+  min-height: 112px !important;
+  max-height: 170px !important;
+}
+.refined-answer-card .review-panel{
+  margin-top: 8px !important;
+  margin-bottom: 2px !important;
+}
+.refined-answer-card .compact-reference{
+  margin-top: 4px !important;
+}
+.refined-answer-card .bottom-nav{
+  margin-top: 18px !important;
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+}
+.refined-answer-card .question-title{
+  margin-bottom: 8px !important;
+}
+.refined-answer-card label{
+  margin-top: 10px !important;
+  margin-bottom: 6px !important;
+}
+.refined-answer-card .question-hint{
+  margin-bottom: 8px !important;
+}
+
+@media(max-width:720px){
+  .refined-answer-card.answer-card{
+    min-height: clamp(520px, 68vh, 620px) !important;
+    padding-bottom: 18px !important;
+  }
+  .refined-answer-card .answer-input.glass-editor{
+    min-height: 104px !important;
+    max-height: 150px !important;
+  }
+  .refined-answer-card .bottom-nav{
+    margin-top: 16px !important;
+  }
+}
+
+@media(max-height:760px){
+  .refined-answer-card.answer-card{
+    min-height: 500px !important;
+  }
+  .refined-answer-card .answer-input.glass-editor{
+    min-height: 92px !important;
+  }
+}
+
 </style>
 </head>
 <body>
