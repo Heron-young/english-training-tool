@@ -2162,6 +2162,42 @@ main{padding-top:18px}
   .type-stat-card b{font-size:23px}
 }
 
+
+/* ===== Home status entrance fix ===== */
+.stat-card{
+  text-align:left;
+  cursor:pointer;
+  user-select:none;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.stat-card:active{transform:translateY(1px) scale(.995)}
+.stat-card.clickable::after{
+  content:"›";
+  position:absolute;
+  right:18px;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(20,24,30,.28);
+  font-size:22px;
+  font-weight:700;
+}
+.stat-card.clickable{
+  position:relative;
+  padding-right:42px;
+}
+.home-entry-grid{
+  margin-bottom:8px;
+}
+.status-overview .status-chip{
+  cursor:pointer;
+}
+.storage-note{
+  margin-top:10px;
+  color:var(--sub2);
+  font-size:12px;
+  line-height:1.45;
+}
+
 </style>
 </head>
 <body>
@@ -2202,8 +2238,72 @@ main{padding-top:18px}
 </main></div>
 <script>
 const KEY="heron_english_rounds_v04";let state={rounds:[]};let currentRoundId=null;let currentIndex=0;let currentMode="answer";let pendingQuestions=[];let pendingMeta={};let submitHint="";let roundStatusFilter="all";const ERROR_TAGS=["语序","时态","介词","冠词","be动词","主谓一致","句型骨架","单词拼写","表达不自然","未掌握","阶段可通过"];const STATUS_OPTIONS=[["answering","作答中"],["pending_ai","待 AI 二筛"],["reviewed","Heron 已审核"],["notion_done","已沉淀 Notion"]];
+function looksLikeRoundState(obj){
+  return obj && typeof obj==="object" && Array.isArray(obj.rounds);
+}
+function findRecoverableRoundState(){
+  let best=null;
+  let bestKey="";
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(!k || k===KEY || !/heron|english|round|training|drill/i.test(k)) continue;
+      const raw=localStorage.getItem(k);
+      if(!raw) continue;
+      let obj=null;
+      try{obj=JSON.parse(raw)}catch(e){continue}
+      if(looksLikeRoundState(obj)){
+        const count=(obj.rounds||[]).length;
+        if(!best || count>(best.rounds||[]).length){
+          best=obj;
+          bestKey=k;
+        }
+      }
+    }
+  }catch(e){}
+  if(best){
+    try{localStorage.setItem(KEY,JSON.stringify(best));localStorage.setItem(KEY+"_recovered_from",bestKey)}catch(e){}
+    return best;
+  }
+  return null;
+}
+function localStorageReport(){
+  const keys=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(/heron|english|round|training|drill/i.test(k||"")){
+        const raw=localStorage.getItem(k)||"";
+        let n="";
+        try{const obj=JSON.parse(raw); if(obj&&Array.isArray(obj.rounds)) n=" · "+obj.rounds.length+"轮"}catch(e){}
+        keys.push(k+n);
+      }
+    }
+  }catch(e){}
+  return keys.join("；") || "未发现相关本地数据 key";
+}
+
 function uid(prefix="tr"){const d=new Date();const stamp=d.getFullYear().toString().slice(2)+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+Math.random().toString(36).slice(2,8);return prefix+"_"+stamp}function now(){return new Date().toISOString()}function fmtDate(iso){if(!iso)return"";const d=new Date(iso);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`}function esc(s){return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function normalizeState(){if(!state||typeof state!=="object")state={rounds:[]};if(!Array.isArray(state.rounds))state.rounds=[];state.rounds.forEach(r=>{if(!r.status)r.status="answering";if(!Array.isArray(r.questions))r.questions=[];r.questions.forEach(q=>{if(!Array.isArray(q.errorTags))q.errorTags=[];if(q.wrongTag&&!q.errorTags.includes(q.wrongTag))q.errorTags.push(q.wrongTag);});});}
-function save(){normalizeState();localStorage.setItem(KEY,JSON.stringify(state))}function load(){try{const raw=localStorage.getItem(KEY);if(raw)state=JSON.parse(raw)}catch(e){}normalizeState();renderHomeStats();renderRounds()}
+function save(){normalizeState();localStorage.setItem(KEY,JSON.stringify(state))}function load(){
+  let loaded=false;
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){
+      state=JSON.parse(raw);
+      loaded=true;
+    }
+  }catch(e){}
+  normalizeState();
+  if((!loaded || !state.rounds || state.rounds.length===0)){
+    const recovered=findRecoverableRoundState();
+    if(recovered){
+      state=recovered;
+      normalizeState();
+    }
+  }
+  renderHomeStats();
+  renderRounds();
+}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 function showPage(id){
   if(id!=="detail")document.body.classList.remove("immersive-mode");
@@ -2260,20 +2360,20 @@ function renderHomeStats(){
   const notion=state.rounds.filter(r=>r.status==="notion_done"||r.status==="done").length;
   box.innerHTML=`<div class="page-head"><div><h2>训练首页</h2><p class="sub">轻量统计 · 状态看板 · 所有入口从这里进入。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div>
   <div class="stat-grid">
-    <div class="stat-card"><b>${state.rounds.length}</b><span>总轮次</span></div>
-    <div class="stat-card"><b>${totalQ}</b><span>总题数</span></div>
-    <div class="stat-card"><b>${answered}</b><span>已作答</span></div>
-    <div class="stat-card"><b>${c.answering}</b><span>作答中</span></div>
-    <div class="stat-card"><b>${c.pending_ai}</b><span>待 AI 二筛</span></div>
-    <div class="stat-card"><b>${notion}</b><span>已沉淀 Notion</span></div>
+    <div class="stat-card clickable" onclick="roundStatusFilter='all';showPage('rounds')"><b>${state.rounds.length}</b><span>总轮次</span></div>
+    <div class="stat-card clickable" onclick="showPage('typeGroups')"><b>${totalQ}</b><span>总题数</span></div>
+    <div class="stat-card clickable" onclick="roundStatusFilter='all';showPage('rounds')"><b>${answered}</b><span>已作答</span></div>
+    <div class="stat-card clickable" onclick="roundStatusFilter='answering';showPage('rounds')"><b>${c.answering}</b><span>作答中</span></div>
+    <div class="stat-card clickable" onclick="roundStatusFilter='pending_ai';showPage('rounds')"><b>${c.pending_ai}</b><span>待 AI 二筛</span></div>
+    <div class="stat-card clickable" onclick="roundStatusFilter='notion_done';showPage('rounds')"><b>${notion}</b><span>已沉淀 Notion</span></div>
   </div>
-  <div class="card"><h3>状态统一管理</h3><div class="status-overview">${STATUS_OPTIONS.map(([k,l])=>`<button class="status-chip" onclick="roundStatusFilter='${k}';showPage('rounds')">${l} · ${c[k]||0}</button>`).join("")}<button class="status-chip" onclick="roundStatusFilter='all';showPage('rounds')">全部 · ${c.all}</button></div><p class="status-manage-note">本地只记录状态，不验证 Notion 是否真实写入；最终判断仍由 Heron 审核。</p></div>
   <div class="card"><h3>入口</h3><div class="home-entry-grid">
     <button class="home-entry" onclick="showPage('rounds')"><b>训练轮次</b><span>作答 / 状态流转</span></button>
     <button class="home-entry" onclick="showPage('newRound')"><b>新建轮次</b><span>导入 HEQ1 出题包</span></button>
     <button class="home-entry" onclick="showPage('typeGroups')"><b>题型分组</b><span>按类型查看结构</span></button>
     <button class="home-entry" onclick="showPage('guide')"><b>流转 / 说明</b><span>待二筛 / 备份 / 规则</span></button>
-  </div><p class="home-compact-note">首页只保留统计、状态和入口；具体内容进入对应页面查看。</p></div>`;
+  </div><p class="home-compact-note">首页只保留统计、状态和入口；具体内容进入对应页面查看。</p></div>
+  <div class="card"><h3>状态看板 / 入口</h3><div class="status-overview">${STATUS_OPTIONS.map(([k,l])=>`<button class="status-chip" onclick="roundStatusFilter='${k}';showPage('rounds')">${l} · ${c[k]||0}</button>`).join("")}<button class="status-chip" onclick="roundStatusFilter='all';showPage('rounds')">全部 · ${c.all}</button></div><p class="status-manage-note">点击状态即可进入对应训练轮次。本地只记录状态，不验证 Notion 是否真实写入；最终判断仍由 Heron 审核。</p><p class="storage-note">本地数据 key：${KEY}。如果某个设备为空，通常是打开方式/网址不同导致本地存储隔离，可用 .heb 文件恢复。</p></div>`;
 }
 function parseHEQ1(raw){
   const lines=String(raw||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean);
