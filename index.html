@@ -2617,6 +2617,66 @@ body{color:var(--ink) !important;}
   font-size:20px;
 }
 
+
+/* ===== Stability full check patch ===== */
+.page.active{display:block !important;}
+.empty{
+  padding:24px;
+  color:var(--sub);
+  text-align:center;
+  border-radius:24px;
+  background:rgba(255,255,255,.22);
+}
+.type-detail summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.type-detail summary::-webkit-details-marker{display:none}
+.type-detail summary::after{
+  content:"⌄";
+  color:var(--sub);
+  font-size:20px;
+}
+.type-question-list{
+  list-style:none;
+  padding:10px 0 0;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.type-question-list li{
+  padding:12px 14px;
+  border-radius:18px;
+  background:rgba(255,255,255,.24);
+  cursor:pointer;
+}
+.type-question-list li span{
+  display:block;
+  color:var(--ink);
+  font-weight:650;
+}
+.type-question-list li em{
+  display:block;
+  margin-top:4px;
+  color:var(--sub);
+  font-style:normal;
+  font-size:12px;
+}
+.delete-btn{
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  border:0;
+  background:rgba(255,255,255,.34);
+  color:rgba(40,48,58,.58);
+  font-size:20px;
+}
+
 </style>
 </head>
 <body>
@@ -2703,7 +2763,25 @@ function localStorageReport(){
 }
 
 function uid(prefix="tr"){const d=new Date();const stamp=d.getFullYear().toString().slice(2)+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+Math.random().toString(36).slice(2,8);return prefix+"_"+stamp}function now(){return new Date().toISOString()}function fmtDate(iso){if(!iso)return"";const d=new Date(iso);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`}function esc(s){return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function normalizeState(){if(!state||typeof state!=="object")state={rounds:[]};if(!Array.isArray(state.rounds))state.rounds=[];state.rounds.forEach(r=>{if(!r.status)r.status="answering";if(!Array.isArray(r.questions))r.questions=[];r.questions.forEach(q=>{if(!Array.isArray(q.errorTags))q.errorTags=[];if(q.wrongTag&&!q.errorTags.includes(q.wrongTag))q.errorTags.push(q.wrongTag);});});}
-function save(){normalizeState();localStorage.setItem(KEY,JSON.stringify(state))}function load(){
+function save(){normalizeState();localStorage.setItem(KEY,JSON.stringify(state))}
+function stabilitySelfCheck(){
+  const checks=[
+    ["home","homeStats",()=>renderHomeStats()],
+    ["rounds","roundList",()=>renderRounds()],
+    ["typeGroups","typeGroupBox",()=>renderTypeGroups()],
+  ];
+  const report=[];
+  checks.forEach(([pageId,boxId,fn])=>{
+    const page=document.getElementById(pageId);
+    const box=document.getElementById(boxId);
+    if(!page)report.push(`缺页面:${pageId}`);
+    if(!box)report.push(`缺容器:${boxId}`);
+    try{ if(box)fn(); }catch(e){ report.push(`渲染失败:${pageId}:${e.message}`); }
+  });
+  if(report.length)console.warn("Heron 工具稳定性自检：",report.join("；"));
+}
+
+function load(){
   let loaded=false;
   try{
     const raw=localStorage.getItem(KEY);
@@ -2722,20 +2800,36 @@ function save(){normalizeState();localStorage.setItem(KEY,JSON.stringify(state))
   }
   renderHomeStats();
   renderRounds();
+  setTimeout(stabilitySelfCheck,0);
 }
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+function renderGuidePage(){
+  const guideBox=document.getElementById("guidePendingList");
+  if(guideBox)renderPending("guidePendingList");
+  const pendingBox=document.getElementById("pendingList");
+  if(pendingBox)renderPending("pendingList");
+}
 function showPage(id){
   if(id!=="detail")document.body.classList.remove("immersive-mode");
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const page=document.getElementById(id);
-  if(!page)return;
+  if(!page){
+    console.warn("页面不存在：", id);
+    return;
+  }
   page.classList.add("active");
   if(id==="home")renderHomeStats();
   if(id==="rounds")renderRounds();
-  if(id==="pending")renderPending();
-  if(id==="guide")renderPending("guidePendingList");
+  if(id==="pending")renderPending("pendingList");
+  if(id==="guide")renderGuidePage();
   if(id==="typeGroups")renderTypeGroups();
+  if(id==="detail")renderDetail();
   window.scrollTo({top:0,behavior:"instant"});
+}
+function normalizeStatus(s){
+  if(s==="done")return"notion_done";
+  if(!s)return"answering";
+  return s;
 }
 function statusLabel(s){return{answering:"作答中",first_screen:"一筛完成",pending_ai:"待 AI 二筛",ai_done:"AI 已二筛",reviewed:"Heron 已审核",notion_done:"已沉淀 Notion",done:"已沉淀 Notion"}[s]||"作答中"}
 function statusClass(s){return{answering:"gray",first_screen:"gold",pending_ai:"green",ai_done:"blue",reviewed:"purple",notion_done:"gray",done:"gray"}[s]||"gray"}
@@ -2779,22 +2873,31 @@ function safeText(v){return esc(v==null?"":String(v))}
 function renderRounds(){
   const box=document.getElementById("roundList");
   if(!box)return;
-  const list=[...(state.rounds||[])].sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
-  const filtered=roundStatusFilter&&roundStatusFilter!=="all"?list.filter(r=>{
-    const s=(r.status==="done"?"notion_done":r.status)||"answering";
-    return s===roundStatusFilter;
-  }):list;
-  if(!filtered.length){
-    box.innerHTML='<div class="empty">暂无训练轮次。返回首页或点击“新建”开始。</div>';
+  const rounds=Array.isArray(state.rounds)?state.rounds:[];
+  let list=[...rounds].sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
+  if(roundStatusFilter&&roundStatusFilter!=="all"){
+    list=list.filter(r=>normalizeStatus(r.status)===roundStatusFilter);
+  }
+  if(!list.length){
+    const label=roundStatusFilter&&roundStatusFilter!=="all"?statusLabel(roundStatusFilter):"";
+    box.innerHTML=`<div class="empty">${label?`暂无“${label}”训练轮次。`:"暂无训练轮次。点击“新建”开始。"}</div>`;
     return;
   }
-  box.innerHTML=filtered.map(r=>{
-    const s=(r.status==="done"?"notion_done":r.status)||"answering";
-    return `<div class="card round-card" onclick="currentRoundId='${r.id}';currentIndex=0;showPage('detail');renderDetail()">
-      <div class="round-main"><h3>${safeText(r.title||"未命名训练轮次")}</h3>
-      <div class="meta"><span>${(r.questions||[]).length} 题</span><span>已作答 ${answeredCount(r)}/${(r.questions||[]).length}</span><span>${fmtDate(r.updatedAt||r.createdAt)}</span><span class="badge ${statusClass(s)}">${statusLabel(s)}</span></div>
-      <div class="small">ID：${safeText(r.id)}</div></div>
-      <button class="delete-btn" onclick="event.stopPropagation();deleteRound('${r.id}')">⌫</button>
+  box.innerHTML=list.map(r=>{
+    const st=normalizeStatus(r.status);
+    const qn=Array.isArray(r.questions)?r.questions.length:0;
+    return `<div class="card round-card" onclick="currentRoundId='${esc(r.id)}';currentIndex=0;showPage('detail')">
+      <div class="round-main">
+        <h3>${esc(r.title||"未命名训练轮次")}</h3>
+        <div class="meta">
+          <span>${qn} 题</span>
+          <span>已作答 ${answeredCount(r)}/${qn}</span>
+          <span>${fmtDate(r.updatedAt||r.createdAt)}</span>
+          <span class="badge ${statusClass(st)}">${statusLabel(st)}</span>
+        </div>
+        <div class="small">ID：${esc(r.id||"")}</div>
+      </div>
+      <button class="delete-btn" onclick="event.stopPropagation();deleteRound('${esc(r.id)}')">⌫</button>
     </div>`;
   }).join("");
 }
@@ -2802,24 +2905,48 @@ function renderTypeGroups(){
   const box=document.getElementById("typeGroupBox") || document.getElementById("typeGroupList");
   if(!box)return;
   const groups={};
-  (state.rounds||[]).forEach(r=>(r.questions||[]).forEach(q=>{
-    const k=(q.type||"未分类").trim()||"未分类";
-    (groups[k]||(groups[k]=[])).push({q,r});
-  }));
-  const keys=Object.keys(groups).sort((a,b)=>groups[b].length-groups[a].length);
-  if(!keys.length){box.innerHTML='<div class="empty">暂无题型数据。</div>';return;}
-  box.innerHTML=`<div class="type-overview-grid">${keys.slice(0,6).map(k=>`<div class="type-stat-card"><b>${groups[k].length}</b><span>${safeText(k)}</span></div>`).join("")}</div><div class="type-group">`+
-    keys.map(k=>{
-      const answered=groups[k].filter(x=>(x.q.userAnswer||"").trim()).length;
-      return `<div class="card"><h3>${safeText(k)} · ${groups[k].length}题</h3><p class="sub">已作答 ${answered}/${groups[k].length}</p></div>`;
-    }).join("")+`</div>`;
+  (state.rounds||[]).forEach(r=>{
+    (r.questions||[]).forEach((q,idx)=>{
+      const key=(q.type||"未分类").trim()||"未分类";
+      if(!groups[key])groups[key]=[];
+      groups[key].push({q,r,idx});
+    });
+  });
+  const keys=Object.keys(groups).sort((a,b)=>groups[b].length-groups[a].length || a.localeCompare(b));
+  if(!keys.length){
+    box.innerHTML='<div class="empty">暂无题型数据。先导入或新建训练轮次。</div>';
+    return;
+  }
+  const overview=`<div class="type-overview-grid">${keys.slice(0,6).map(k=>{
+    return `<button class="type-stat-card" onclick="document.getElementById('type_${encodeURIComponent(k)}')?.scrollIntoView({behavior:'smooth',block:'start'})"><b>${groups[k].length}</b><span>${esc(k)}</span></button>`;
+  }).join("")}</div>`;
+  const details=keys.map(k=>{
+    const arr=groups[k];
+    const answered=arr.filter(x=>(x.q.userAnswer||"").trim()).length;
+    const sample=arr.slice(0,8).map(x=>`<li onclick="currentRoundId='${esc(x.r.id)}';currentIndex=${x.idx};showPage('detail')"><span>${esc(x.q.prompt||"")}</span><em>${esc(x.r.title||"")}</em></li>`).join("");
+    return `<details class="card type-detail" id="type_${encodeURIComponent(k)}">
+      <summary><div><h3>${esc(k)} · ${arr.length}题</h3><p class="sub">已作答 ${answered}/${arr.length}</p></div></summary>
+      <ul class="type-question-list">${sample || "<li>暂无题目</li>"}</ul>
+    </details>`;
+  }).join("");
+  box.innerHTML=overview+details;
 }
 function renderPending(targetId="pendingList"){
-  const box=document.getElementById(targetId);
+  const box=document.getElementById(targetId) || document.getElementById("guidePendingList") || document.getElementById("pendingList");
   if(!box)return;
-  const arr=(state.rounds||[]).filter(r=>r.status==="pending_ai");
-  if(!arr.length){box.innerHTML='<div class="empty">暂无待 AI 二筛的训练轮次。</div>';return;}
-  box.innerHTML=arr.sort((a,b)=>new Date(b.submittedAt||b.updatedAt||0)-new Date(a.submittedAt||a.updatedAt||0)).map(r=>`<div class="card round-card" onclick="currentRoundId='${r.id}';showExport()"><div><h3>${safeText(r.title)}</h3><div class="meta"><span>${fmtDate(r.submittedAt||r.updatedAt)}</span><span>已作答 ${answeredCount(r)}/${(r.questions||[]).length}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${safeText(r.id)}</div></div></div>`).join("");
+  const arr=(state.rounds||[]).filter(r=>normalizeStatus(r.status)==="pending_ai");
+  if(!arr.length){
+    box.innerHTML='<div class="empty">暂无待 AI 二筛的训练轮次。</div>';
+    return;
+  }
+  box.innerHTML=arr.sort((a,b)=>new Date(b.submittedAt||b.updatedAt||0)-new Date(a.submittedAt||a.updatedAt||0)).map(r=>{
+    const qn=Array.isArray(r.questions)?r.questions.length:0;
+    return `<div class="card round-card" onclick="currentRoundId='${esc(r.id)}';showExport()">
+      <div><h3>${esc(r.title||"未命名训练轮次")}</h3>
+      <div class="meta"><span>${fmtDate(r.submittedAt||r.updatedAt)}</span><span>已作答 ${answeredCount(r)}/${qn}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div>
+      <div class="small">ID：${esc(r.id||"")}</div></div>
+    </div>`;
+  }).join("");
 }
 
 function renderHomeStats(){
@@ -2828,42 +2955,29 @@ function renderHomeStats(){
   const c=statusCount();
   const totalQ=totalQuestionCount();
   const answered=totalAnsweredCount();
-  const notion=state.rounds.filter(r=>r.status==="notion_done"||r.status==="done").length;
+  const notion=(state.rounds||[]).filter(r=>normalizeStatus(r.status)==="notion_done").length;
   box.innerHTML=`<div class="page-head home-head-compact"><div><h2>训练首页</h2><p class="sub">轻量统计 · 状态看板 · 所有入口从这里进入。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div>
   <section class="home-float-panel">
     <div class="home-panel-top">
-      <button class="home-metric" onclick="roundStatusFilter='all';showPage('rounds')"><b>${state.rounds.length}</b><span>总轮次</span></button>
+      <button class="home-metric" onclick="roundStatusFilter='all';showPage('rounds')"><b>${(state.rounds||[]).length}</b><span>总轮次</span></button>
       <button class="home-metric" onclick="showPage('typeGroups')"><b>${totalQ}</b><span>总题数</span></button>
       <button class="home-metric" onclick="roundStatusFilter='all';showPage('rounds')"><b>${answered}</b><span>已作答</span></button>
-      <button class="home-metric" onclick="roundStatusFilter='answering';showPage('rounds')"><b>${c.answering}</b><span>作答中</span></button>
-      <button class="home-metric" onclick="roundStatusFilter='pending_ai';showPage('rounds')"><b>${c.pending_ai}</b><span>待 AI 二筛</span></button>
+      <button class="home-metric" onclick="roundStatusFilter='answering';showPage('rounds')"><b>${c.answering||0}</b><span>作答中</span></button>
+      <button class="home-metric" onclick="roundStatusFilter='pending_ai';showPage('rounds')"><b>${c.pending_ai||0}</b><span>待 AI 二筛</span></button>
       <button class="home-metric" onclick="roundStatusFilter='notion_done';showPage('rounds')"><b>${notion}</b><span>已沉淀</span></button>
     </div>
-
     <div class="home-panel-divider"></div>
-
     <div class="home-panel-actions">
-      <button class="home-action primary-action" onclick="showPage('rounds')">
-        <strong>训练轮次</strong><span>作答 / 状态流转</span>
-      </button>
-      <button class="home-action" onclick="showPage('newRound')">
-        <strong>新建轮次</strong><span>导入 HEQ1 出题包</span>
-      </button>
-      <button class="home-action" onclick="showPage('typeGroups')">
-        <strong>题型分组</strong><span>按类型查看结构</span>
-      </button>
-      <button class="home-action" onclick="showPage('guide')">
-        <strong>流转 / 说明</strong><span>待二筛 / 备份 / 规则</span>
-      </button>
+      <button class="home-action primary-action" onclick="roundStatusFilter='all';showPage('rounds')"><strong>训练轮次</strong><span>作答 / 状态流转</span></button>
+      <button class="home-action" onclick="showPage('newRound')"><strong>新建轮次</strong><span>导入 HEQ1 出题包</span></button>
+      <button class="home-action" onclick="showPage('typeGroups')"><strong>题型分组</strong><span>按类型查看结构</span></button>
+      <button class="home-action" onclick="showPage('guide')"><strong>流转 / 说明</strong><span>待二筛 / 备份 / 规则</span></button>
     </div>
-
     <div class="home-panel-divider soft"></div>
-
     <div class="home-panel-status">
       ${STATUS_OPTIONS.map(([k,l])=>`<button class="status-pill" onclick="roundStatusFilter='${k}';showPage('rounds')">${l} · ${c[k]||0}</button>`).join("")}
-      <button class="status-pill" onclick="roundStatusFilter='all';showPage('rounds')">全部 · ${c.all}</button>
+      <button class="status-pill" onclick="roundStatusFilter='all';showPage('rounds')">全部 · ${c.all||0}</button>
     </div>
-
     <p class="home-panel-note">点击数字、状态或入口都可进入对应页面。本地只记录状态，不验证 Notion 是否真实写入；最终判断仍由 Heron 审核。</p>
   </section>`;
 }
