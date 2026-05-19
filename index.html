@@ -246,6 +246,8 @@ let roundStatusFilter="all";
 let pendingQuestions=[];
 let pendingMeta={};
 let softTimer=null;
+let currentExportText="";
+let currentExportFilename="HER1.txt";
 
 const ERROR_TAGS=["语序","时态","介词","冠词","be动词","主谓一致","句型骨架","单词拼写","表达不自然","未掌握","阶段可通过"];
 const STATUS_OPTIONS=[["answering","作答中"],["pending_ai","待 AI 二筛"],["reviewed","Heron 已审核"],["notion_done","已沉淀 Notion"]];
@@ -535,15 +537,61 @@ function buildHER1(r){
 }
 function showExport(){
   saveCurrent();
-  const r=getRound(currentRoundId);if(!r)return;
+  const r=getRound(currentRoundId);
+  if(!r)return;
   showPage("exportPage");
-  const text=buildHER1(r);
-  document.getElementById("exportBox").innerHTML=`<div class="panel"><h2>导出给 AI 二筛</h2><p class="sub">${esc(r.title)}</p><div class="actions"><button class="primary" onclick="copyText(${JSON.stringify(text)})">复制 HER1</button><button class="ghost" onclick="downloadText('HER1_'+safeName('${esc(r.title)}')+'.txt',${JSON.stringify(text)})">下载 .txt</button></div><pre class="export-text card">${esc(text)}</pre></div>`;
+  currentExportText=buildHER1(r);
+  currentExportFilename="HER1_"+safeName(r.title)+".txt";
+  document.getElementById("exportBox").innerHTML=`<div class="panel"><h2>导出给 AI 二筛</h2><p class="sub">${esc(r.title)}</p><div class="actions"><button class="primary" onclick="copyCurrentHER1()">复制 HER1</button><button class="ghost" onclick="downloadCurrentHER1()">下载 .txt</button></div><pre class="export-text card">${esc(currentExportText)}</pre></div>`;
 }
 function safeName(s){return String(s||"").replace(/[\\/:*?"<>|]/g,"_").slice(0,60)}
-function copyText(t){navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>alert("已复制。")).catch(()=>fallbackCopy(t))}
-function fallbackCopy(t){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();alert("已复制。")}
-function downloadText(name,text){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/plain;charset=utf-8"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},300)}
+function copyCurrentHER1(){
+  if(!currentExportText){
+    alert("没有可复制的 HER1 内容。");
+    return;
+  }
+  copyText(currentExportText);
+}
+function downloadCurrentHER1(){
+  if(!currentExportText){
+    alert("没有可下载的 HER1 内容。");
+    return;
+  }
+  downloadText(currentExportFilename||"HER1.txt",currentExportText);
+}
+function copyText(t){
+  t=String(t||"");
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(t).then(()=>alert("已复制 HER1。")).catch(()=>fallbackCopy(t));
+  }else{
+    fallbackCopy(t);
+  }
+}
+function fallbackCopy(t){
+  const ta=document.createElement("textarea");
+  ta.value=String(t||"");
+  ta.setAttribute("readonly","");
+  ta.style.position="fixed";
+  ta.style.left="-9999px";
+  ta.style.top="0";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0,ta.value.length);
+  let ok=false;
+  try{ok=document.execCommand("copy")}catch(e){ok=false}
+  ta.remove();
+  alert(ok?"已复制 HER1。":"复制失败，请长按下方文本手动复制。");
+}
+function downloadText(name,text){
+  const blob=new Blob([String(text||"")],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=name||"HER1.txt";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
 
 function backupJSON(){save();return JSON.stringify(state)}
 function downloadJSON(){downloadText("heron-english-backup.json",backupJSON())}
