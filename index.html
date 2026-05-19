@@ -2677,6 +2677,19 @@ body{color:var(--ink) !important;}
   font-size:20px;
 }
 
+
+/* ===== Open round stability patch ===== */
+.round-card{cursor:pointer;}
+.review-panel summary,
+.tag-fold summary{
+  cursor:pointer;
+}
+.render-error{
+  padding:18px;
+  border-radius:24px;
+  background:rgba(255,255,255,.28);
+}
+
 </style>
 </head>
 <body>
@@ -2781,6 +2794,13 @@ function stabilitySelfCheck(){
   if(report.length)console.warn("Heron 工具稳定性自检：",report.join("；"));
 }
 
+
+function coreFunctionSelfCheck(){
+  const required=["renderReviewPanel","renderErrorTags","toggleErrorTag","tagText","renderDetail","renderDetailInner","openRound"];
+  const missing=required.filter(n=>typeof window[n]!=="function");
+  if(missing.length)console.warn("核心函数缺失：",missing.join(","));
+}
+
 function load(){
   let loaded=false;
   try{
@@ -2800,7 +2820,7 @@ function load(){
   }
   renderHomeStats();
   renderRounds();
-  setTimeout(stabilitySelfCheck,0);
+  setTimeout(stabilitySelfCheck,0);setTimeout(coreFunctionSelfCheck,0);
 }
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 function renderGuidePage(){
@@ -2836,6 +2856,47 @@ function statusClass(s){return{answering:"gray",first_screen:"gold",pending_ai:"
 function statusOrder(s){return{answering:0,first_screen:1,pending_ai:2,ai_done:3,reviewed:4,notion_done:5,done:5}[s]||0}
 function setRoundStatus(id,status){const r=getRound(id);if(!r)return;r.status=status;r.updatedAt=now();if(status==="first_screen")r.firstScreenAt=now();if(status==="pending_ai")r.submittedAt=now();if(status==="ai_done")r.aiDoneAt=now();if(status==="reviewed")r.reviewedAt=now();if(status==="notion_done"||status==="done")r.notionDoneAt=now();save();if(currentRoundId===id){renderDetail()}else{renderRounds()}}
 function renderStatusControls(r){const steps=[["first_screen","一筛完成"],["pending_ai","待 AI 二筛"],["ai_done","AI 已二筛"],["reviewed","Heron 已审核"],["notion_done","已沉淀 Notion"]];const cur=statusOrder(r.status);return `<div class="status-flow-label">流转状态</div><div class="status-flow">${steps.map(([key,label])=>`<button class="${r.status===key?'active':statusOrder(key)<cur?'done':''}" onclick="event.stopPropagation();setRoundStatus('${r.id}','${key}')">${label}</button>`).join("")}</div>`}function answeredCount(r){return r.questions.filter(q=>(q.userAnswer||"").trim()).length}function compactStats(r){const total=r.questions.length,done=answeredCount(r);return `总题 <b>${total}</b> · 已作答 <b>${done}</b> · 未作答 <b>${total-done}</b>`}
+
+function tagText(q){
+  return Array.isArray(q&&q.errorTags)&&q.errorTags.length?q.errorTags.join(","):"";
+}
+function tagHtml(q){
+  return tagText(q)?`<span class="tag-inline">${q.errorTags.map(t=>`<span class="tag-mini">${esc(t)}</span>`).join("")}</span>`:"";
+}
+function renderErrorTags(q){
+  const active=Array.isArray(q&&q.errorTags)?q.errorTags:[];
+  return `<div class="tag-row">${ERROR_TAGS.map(t=>`<button type="button" class="tag-btn ${active.includes(t)?'active':''}" onclick="toggleErrorTag(${currentIndex},'${esc(t)}')">${esc(t)}</button>`).join("")}</div>`;
+}
+function renderReviewPanel(q){
+  const count=Array.isArray(q&&q.errorTags)?q.errorTags.length:0;
+  const hasSelf=(q&&q.selfCheck||"").trim().length>0;
+  const shouldOpen=hasSelf||count>0;
+  return `<details class="review-panel" ${shouldOpen?"open":""}>
+    <summary><span>一筛 / 自检（可选）</span><em>${count?`错因 ${count}`:"可展开"}</em></summary>
+    <div class="review-inner">
+      <div id="selfInput" class="self-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="只记一句：可能错在哪？想确认什么？" oninput="saveCurrentSoft()">${esc(q&&q.selfCheck||"")}</div>
+      <details class="tag-fold" ${count?"open":""}>
+        <summary><span>Heron 自标错因</span><em>${count?esc(tagText(q)):"展开多选"}</em></summary>
+        ${renderErrorTags(q)}
+      </details>
+    </div>
+  </details>`;
+}
+function toggleErrorTag(i,t){
+  saveCurrent();
+  const r=getRound(currentRoundId);
+  if(!r||!r.questions||!r.questions[i])return;
+  const q=r.questions[i];
+  if(!Array.isArray(q.errorTags))q.errorTags=[];
+  const idx=q.errorTags.indexOf(t);
+  if(idx>=0)q.errorTags.splice(idx,1);
+  else q.errorTags.push(t);
+  q.updatedAt=now();
+  r.updatedAt=now();
+  save();
+  renderDetail();
+}
+
 function renderQuestionInfo(q){
   const rows=[
     ["类型",q.type],
@@ -2886,7 +2947,7 @@ function renderRounds(){
   box.innerHTML=list.map(r=>{
     const st=normalizeStatus(r.status);
     const qn=Array.isArray(r.questions)?r.questions.length:0;
-    return `<div class="card round-card" onclick="currentRoundId='${esc(r.id)}';currentIndex=0;showPage('detail')">
+    return `<div class="card round-card" data-round-id="${esc(r.id||"")}" onclick="openRound(this.dataset.roundId)">
       <div class="round-main">
         <h3>${esc(r.title||"未命名训练轮次")}</h3>
         <div class="meta">
@@ -2897,7 +2958,7 @@ function renderRounds(){
         </div>
         <div class="small">ID：${esc(r.id||"")}</div>
       </div>
-      <button class="delete-btn" onclick="event.stopPropagation();deleteRound('${esc(r.id)}')">⌫</button>
+      <button class="delete-btn" onclick="event.stopPropagation();deleteRound(this.closest('.round-card').dataset.roundId)">⌫</button>
     </div>`;
   }).join("");
 }
@@ -3012,8 +3073,19 @@ function parseQuestions(text){const raw=(text||"").replace(/\r\n/g,"\n").trim();
   result.push({id:uid("q"),prompt:parts[0],reference:parts[1],type:typeCodeToName(parts[2]||"ce"),stage:parts[3]||"",pattern,constraint,note,phonetic,userAnswer:"",selfCheck:"",errorTags:[]})
 }}}if(result.length)return result;const blocks=raw.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);for(const block of blocks){const l=block.split("\n").map(x=>x.trim()).filter(Boolean);if(l.length>=2)result.push({id:uid("q"),prompt:l[0],reference:l[1],type:"中译英",stage:"",pattern:"",constraint:"",note:l.slice(2).join(" / "),phonetic:"",userAnswer:"",selfCheck:"",errorTags:[]})}return result}
 function previewCreate(){pendingQuestions=parseQuestions(document.getElementById("newText").value);const box=document.getElementById("createPreview");const btn=document.getElementById("createBtn");if(!pendingQuestions.length){box.innerHTML='<div class="card notice">没有识别到题目。推荐格式：HEQ1 出题包，或 题目 || 参考答案 || 类型 || 阶段 || 句型骨架 || 句型限制 || 备注 || 音标</div>';btn.disabled=true;return}box.innerHTML=`<div class="card"><h3>识别到 ${pendingQuestions.length} 题</h3>${pendingQuestions.slice(0,8).map((q,i)=>`<p><b>${i+1}. ${esc(q.prompt)}</b><br><span class="small">${esc(q.reference)}</span></p>`).join("")}${pendingQuestions.length>8?'<p class="small">只预览前 8 题。</p>':''}</div>`;btn.disabled=false}
-function createRound(){if(!pendingQuestions.length)previewCreate();if(!pendingQuestions.length)return;const title=document.getElementById("newTitle").value.trim()||(pendingMeta&&pendingMeta.title)||`训练轮次：${fmtDate(now())}`;const r={id:uid("tr"),title,createdAt:now(),updatedAt:now(),submittedAt:null,status:"answering",questions:pendingQuestions};state.rounds.push(r);save();document.getElementById("newTitle").value="";document.getElementById("newText").value="";document.getElementById("createPreview").innerHTML="";document.getElementById("createBtn").disabled=true;pendingQuestions=[];pendingMeta={};openRound(r.id)}function getRound(id){return state.rounds.find(r=>r.id===id)}function openRound(id){currentRoundId=id;currentIndex=0;currentMode="answer";showPage("detail");renderDetail()}function deleteRound(id){if(!confirm("确定删除这个训练轮次？"))return;state.rounds=state.rounds.filter(r=>r.id!==id);save();renderRounds()}
-function renderDetail(){
+function createRound(){if(!pendingQuestions.length)previewCreate();if(!pendingQuestions.length)return;const title=document.getElementById("newTitle").value.trim()||(pendingMeta&&pendingMeta.title)||`训练轮次：${fmtDate(now())}`;const r={id:uid("tr"),title,createdAt:now(),updatedAt:now(),submittedAt:null,status:"answering",questions:pendingQuestions};state.rounds.push(r);save();document.getElementById("newTitle").value="";document.getElementById("newText").value="";document.getElementById("createPreview").innerHTML="";document.getElementById("createBtn").disabled=true;pendingQuestions=[];pendingMeta={};openRound(r.id)}function getRound(id){return state.rounds.find(r=>r.id===id)}function openRound(id){
+  const r=getRound(id);
+  if(!r){
+    showPage("rounds");
+    return;
+  }
+  currentRoundId=id;
+  currentIndex=0;
+  currentMode="answer";
+  submitHint="";
+  showPage("detail");
+}function deleteRound(id){if(!confirm("确定删除这个训练轮次？"))return;state.rounds=state.rounds.filter(r=>r.id!==id);save();renderRounds()}
+function renderDetailInner(){
   const r=getRound(currentRoundId);
   if(!r)return showPage("rounds");
   const total=r.questions.length,done=answeredCount(r),q=r.questions[currentIndex]||r.questions[0];
@@ -3064,6 +3136,18 @@ function renderDetail(){
       <button onclick="showExport()">查看导出文本</button>
     </div>`;
 }
+function renderDetail(){
+  try{
+    renderDetailInner();
+  }catch(err){
+    console.error("renderDetail failed:", err);
+    const box=document.getElementById("detailBox");
+    if(box){
+      box.innerHTML=`<div class="card"><h3>这一轮暂时打不开</h3><p class="sub">页面渲染被中断：${esc(err&&err.message||err)}</p><div class="actions"><button onclick="showPage('rounds')">返回训练轮次</button><button onclick="downloadBackup()">先导出备份</button></div></div>`;
+    }
+  }
+}
+
 function renderAnswerMode(q,total){
   if(!q)return"";
   const r=getRound(currentRoundId);
