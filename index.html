@@ -2455,10 +2455,320 @@ main{padding-top:18px}
   }
 }
 
+
+/* ===== V0.9 首页整体玻璃面板 ===== */
+.home-head-compact{margin-bottom:12px !important}
+.home-float-panel{
+  position:relative;
+  overflow:hidden;
+  border-radius:34px;
+  padding:22px 22px 20px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,.78), rgba(255,255,255,.22) 38%, rgba(210,228,248,.22) 78%),
+    linear-gradient(145deg, rgba(255,255,255,.46), rgba(204,225,249,.30));
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.82),
+    inset 0 -1px 0 rgba(140,170,205,.13),
+    0 22px 48px rgba(92,116,148,.10);
+  backdrop-filter: blur(24px) saturate(145%);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+}
+.home-float-panel::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(115deg, rgba(255,255,255,.44), transparent 26%),
+    radial-gradient(circle at 100% 100%, rgba(137,184,227,.18), transparent 36%);
+  opacity:.9;
+}
+.home-float-panel > *{position:relative;z-index:1}
+.home-panel-top{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.home-metric{
+  min-height:86px;
+  border:0;
+  text-align:left;
+  border-radius:24px;
+  padding:16px 16px 13px;
+  background:rgba(255,255,255,.30);
+  color:var(--ink);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.58),
+    0 10px 22px rgba(86,110,145,.055);
+}
+.home-metric b{
+  display:block;
+  font-size:33px;
+  line-height:1;
+  letter-spacing:-.045em;
+}
+.home-metric span{
+  display:block;
+  margin-top:10px;
+  color:var(--sub);
+  font-size:13px;
+}
+.home-panel-divider{
+  height:1px;
+  margin:18px 0;
+  background:linear-gradient(90deg, transparent, rgba(130,155,185,.18), transparent);
+}
+.home-panel-divider.soft{margin:15px 0 13px}
+.home-panel-actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.home-action{
+  min-height:78px;
+  border:0;
+  border-radius:25px;
+  padding:15px 16px;
+  text-align:left;
+  background:rgba(255,255,255,.28);
+  color:var(--ink);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.56),
+    0 10px 22px rgba(86,110,145,.05);
+}
+.home-action.primary-action{
+  background:linear-gradient(145deg, rgba(255,255,255,.42), rgba(191,218,246,.25));
+}
+.home-action strong{
+  display:block;
+  font-size:18px;
+  line-height:1.15;
+}
+.home-action span{
+  display:block;
+  margin-top:7px;
+  color:var(--sub);
+  font-size:12.5px;
+  line-height:1.35;
+}
+.home-panel-status{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.status-pill{
+  border:0;
+  border-radius:999px;
+  padding:9px 13px;
+  background:rgba(255,255,255,.34);
+  color:rgba(48,55,65,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.58);
+  font-size:13px;
+}
+.home-panel-note{
+  margin:14px 2px 0;
+  font-size:12px;
+  line-height:1.55;
+  color:var(--sub2);
+}
+.home-metric:active,.home-action:active,.status-pill:active{
+  transform:translateY(1px) scale(.995);
+}
+@media(max-width:720px){
+  .home-float-panel{border-radius:30px;padding:18px 16px 18px}
+  .home-panel-top{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .home-metric{min-height:78px;border-radius:22px;padding:14px 14px 12px}
+  .home-metric b{font-size:30px}
+  .home-panel-actions{gap:9px}
+  .home-action{min-height:72px;border-radius:22px;padding:13px 14px}
+  .home-action strong{font-size:16.5px}
+  .home-action span{font-size:12px}
+}
+
+
+/* ===== Day / Night theme toggle ===== */
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  justify-self:end;
+}
+.theme-toggle{
+  border:0;
+  min-width:44px;
+  height:34px;
+  padding:0 13px;
+  border-radius:999px;
+  font-weight:800;
+  letter-spacing:.02em;
+  color:rgba(57,68,82,.68);
+  background:rgba(255,255,255,.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.72),
+    0 10px 22px rgba(86,110,145,.06);
+  backdrop-filter:blur(18px) saturate(145%);
+  -webkit-backdrop-filter:blur(18px) saturate(145%);
+}
+.theme-toggle:active{transform:translateY(1px) scale(.98)}
+body.theme-night{
+  --ink:#F2F3F5;
+  --sub:rgba(236,239,244,.66);
+  --sub2:rgba(236,239,244,.46);
+  --edge:rgba(255,255,255,.12);
+  --glass:rgba(20,22,26,.42);
+  --glass2:rgba(12,13,15,.54);
+  --accent:#D8DCE3;
+  --accent2:#AEB5C0;
+  --shadowSoft:
+    0 24px 70px rgba(0,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.10);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255,255,255,.18), transparent 25%),
+    radial-gradient(circle at 82% 18%, rgba(126,136,150,.24), transparent 30%),
+    radial-gradient(circle at 42% 86%, rgba(232,235,240,.12), transparent 34%),
+    linear-gradient(135deg, #030405 0%, #101216 28%, #292D33 52%, #0A0B0D 78%, #E8EAED 145%);
+  color:var(--ink);
+}
+body.theme-night::before{
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.08), transparent 22%, rgba(255,255,255,.04) 48%, transparent 68%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 7px);
+  opacity:.72;
+}
+body.theme-night .top{
+  background:
+    linear-gradient(180deg, rgba(18,20,24,.72), rgba(18,20,24,.40));
+  border-bottom-color:rgba(255,255,255,.08);
+  box-shadow:0 14px 40px rgba(0,0,0,.22);
+}
+body.theme-night .title h1,
+body.theme-night h2,
+body.theme-night h3,
+body.theme-night .question-title,
+body.theme-night label{
+  color:var(--ink) !important;
+}
+body.theme-night .title p,
+body.theme-night .sub,
+body.theme-night .small,
+body.theme-night .meta,
+body.theme-night .home-panel-note,
+body.theme-night .home-compact-note,
+body.theme-night .status-manage-note,
+body.theme-night .data-note{
+  color:var(--sub) !important;
+}
+body.theme-night .exit{
+  color:rgba(236,239,244,.70);
+}
+body.theme-night .theme-toggle{
+  color:rgba(8,10,12,.78);
+  background:linear-gradient(145deg, rgba(255,255,255,.80), rgba(190,197,207,.56));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.76),
+    0 14px 32px rgba(0,0,0,.34);
+}
+body.theme-night .card,
+body.theme-night .home-float-panel,
+body.theme-night .round-card,
+body.theme-night .answer-card,
+body.theme-night .home-metric,
+body.theme-night .home-action,
+body.theme-night .stat-card,
+body.theme-night .type-stat-card,
+body.theme-night .preview,
+body.theme-night input,
+body.theme-night textarea,
+body.theme-night select,
+body.theme-night .glass-editor,
+body.theme-night .reference-block,
+body.theme-night .status-pill,
+body.theme-night .status-chip,
+body.theme-night .home-entry,
+body.theme-night .qnums button,
+body.theme-night .tag-btn,
+body.theme-night .review-panel summary,
+body.theme-night .bottom-nav button{
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.025)) !important;
+  border-color:rgba(255,255,255,.10) !important;
+  color:var(--ink) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.11),
+    inset 0 -1px 0 rgba(0,0,0,.28),
+    0 18px 42px rgba(0,0,0,.22) !important;
+  backdrop-filter:blur(24px) saturate(125%) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(125%) !important;
+}
+body.theme-night .home-float-panel{
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255,255,255,.16), transparent 32%),
+    radial-gradient(circle at 92% 92%, rgba(255,255,255,.10), transparent 38%),
+    linear-gradient(145deg, rgba(16,18,21,.66), rgba(5,6,7,.44)) !important;
+}
+body.theme-night .home-float-panel::before{
+  background:
+    linear-gradient(115deg, rgba(255,255,255,.12), transparent 25%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,.06), transparent 34%) !important;
+}
+body.theme-night .home-metric span,
+body.theme-night .home-action span,
+body.theme-night .status-pill,
+body.theme-night .status-chip,
+body.theme-night .question-hint summary,
+body.theme-night .review-panel summary em,
+body.theme-night .tag-fold summary,
+body.theme-night .tag-btn,
+body.theme-night .reference-block summary{
+  color:rgba(236,239,244,.60) !important;
+}
+body.theme-night .primary,
+body.theme-night .home-action.primary-action,
+body.theme-night .qnums button.active,
+body.theme-night .tag-btn.active{
+  background:
+    linear-gradient(145deg, rgba(245,247,250,.68), rgba(106,112,122,.40)) !important;
+  color:rgba(5,7,9,.86) !important;
+  border-color:rgba(255,255,255,.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.64),
+    0 16px 36px rgba(0,0,0,.38) !important;
+}
+body.theme-night .qnums button.answered{
+  background:rgba(255,255,255,.13) !important;
+}
+body.theme-night .glass-editor:empty:before,
+body.theme-night textarea::placeholder,
+body.theme-night input::placeholder{
+  color:rgba(236,239,244,.28) !important;
+}
+body.theme-night .badge,
+body.theme-night .reference-answer,
+body.theme-night .reference-phonetic{
+  color:var(--ink) !important;
+}
+body.theme-night .home-panel-divider{
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent) !important;
+}
+body.theme-night .logo{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.22),
+    0 16px 36px rgba(0,0,0,.38);
+}
+@media(max-width:720px){
+  .header-actions{gap:6px}
+  .theme-toggle{
+    min-width:40px;
+    height:32px;
+    padding:0 11px;
+  }
+}
+
 </style>
 </head>
 <body>
-<div class="app"><div class="top"><div class="header"><div class="logo" aria-label="Heron avatar" onclick="showPage('home')"></div><div class="title" onclick="showPage('home')"><h1>Heron · 英语训练平台</h1><p>English training platform</p></div><button class="ghost exit" onclick="location.reload()">退出</button></div></div>
+<div class="app"><div class="top"><div class="header"><div class="logo" aria-label="Heron avatar" onclick="showPage('home')"></div><div class="title" onclick="showPage('home')"><h1>Heron · 英语训练平台</h1><p>English training platform</p></div><div class="header-actions"><button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换昼夜">昼</button><button class="ghost exit" onclick="location.reload()">退出</button></div></div></div>
 <main>
 <section id="home" class="page active"><div id="homeStats"></div></section>
 <section id="rounds" class="page"><div class="back" onclick="showPage('home')">← 返回首页</div><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div><h2>训练轮次</h2><p class="sub">选择一个轮次开始作答。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div><div id="roundFilterBar"></div><div id="roundList"></div></section>
@@ -2495,6 +2805,25 @@ main{padding-top:18px}
 </main></div>
 <script>
 const KEY="heron_english_rounds_v04";let state={rounds:[]};let currentRoundId=null;let currentIndex=0;let currentMode="answer";let pendingQuestions=[];let pendingMeta={};let submitHint="";let roundStatusFilter="all";const ERROR_TAGS=["语序","时态","介词","冠词","be动词","主谓一致","句型骨架","单词拼写","表达不自然","未掌握","阶段可通过"];const STATUS_OPTIONS=[["answering","作答中"],["pending_ai","待 AI 二筛"],["reviewed","Heron 已审核"],["notion_done","已沉淀 Notion"]];
+
+const THEME_KEY="heron_english_theme_v01";
+function applyTheme(mode){
+  const safeMode = mode==="night" ? "night" : "day";
+  document.body.classList.toggle("theme-night", safeMode==="night");
+  const btn=document.getElementById("themeToggle");
+  if(btn)btn.textContent=safeMode==="night" ? "夜" : "昼";
+  try{localStorage.setItem(THEME_KEY,safeMode)}catch(e){}
+}
+function toggleTheme(){
+  const isNight=document.body.classList.contains("theme-night");
+  applyTheme(isNight ? "day" : "night");
+}
+function initTheme(){
+  let mode="day";
+  try{mode=localStorage.getItem(THEME_KEY)||"day"}catch(e){}
+  applyTheme(mode);
+}
+
 function looksLikeRoundState(obj){
   return obj && typeof obj==="object" && Array.isArray(obj.rounds);
 }
@@ -2619,55 +2948,44 @@ function renderHomeStats(){
   const totalQ=totalQuestionCount();
   const answered=totalAnsweredCount();
   const notion=state.rounds.filter(r=>r.status==="notion_done"||r.status==="done").length;
-  box.innerHTML=`<div class="page-head"><div><h2>训练首页</h2><p class="sub">轻量统计 · 状态看板 · 所有入口从这里进入。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div>
-  <div class="stat-grid">
-    <div class="stat-card clickable" onclick="roundStatusFilter='all';showPage('rounds')"><b>${state.rounds.length}</b><span>总轮次</span></div>
-    <div class="stat-card clickable" onclick="showPage('typeGroups')"><b>${totalQ}</b><span>总题数</span></div>
-    <div class="stat-card clickable" onclick="roundStatusFilter='all';showPage('rounds')"><b>${answered}</b><span>已作答</span></div>
-    <div class="stat-card clickable" onclick="roundStatusFilter='answering';showPage('rounds')"><b>${c.answering}</b><span>作答中</span></div>
-    <div class="stat-card clickable" onclick="roundStatusFilter='pending_ai';showPage('rounds')"><b>${c.pending_ai}</b><span>待 AI 二筛</span></div>
-    <div class="stat-card clickable" onclick="roundStatusFilter='notion_done';showPage('rounds')"><b>${notion}</b><span>已沉淀 Notion</span></div>
-  </div>
-  <div class="card"><h3>入口</h3><div class="home-entry-grid">
-    <button class="home-entry" onclick="showPage('rounds')"><b>训练轮次</b><span>作答 / 状态流转</span></button>
-    <button class="home-entry" onclick="showPage('newRound')"><b>新建轮次</b><span>导入 HEQ1 出题包</span></button>
-    <button class="home-entry" onclick="showPage('typeGroups')"><b>题型分组</b><span>按类型查看结构</span></button>
-    <button class="home-entry" onclick="showPage('guide')"><b>流转 / 说明</b><span>待二筛 / 备份 / 规则</span></button>
-  </div><p class="home-compact-note">首页只保留统计、状态和入口；具体内容进入对应页面查看。</p></div>
-  <div class="card"><h3>状态看板 / 入口</h3><div class="status-overview">${STATUS_OPTIONS.map(([k,l])=>`<button class="status-chip" onclick="roundStatusFilter='${k}';showPage('rounds')">${l} · ${c[k]||0}</button>`).join("")}<button class="status-chip" onclick="roundStatusFilter='all';showPage('rounds')">全部 · ${c.all}</button></div><p class="status-manage-note">点击状态即可进入对应训练轮次。本地只记录状态，不验证 Notion 是否真实写入；最终判断仍由 Heron 审核。</p><p class="storage-note">本地数据 key：${KEY}。如果某个设备为空，通常是打开方式/网址不同导致本地存储隔离，可用 .heb 文件恢复。</p></div>`;
-}
-
-function typeCodeToName(t){const m={ce:"中译英",ec:"英译中",sp:"拆分",od:"连词成句",rw:"改写",wr:"小作文"};return m[String(t||"").trim()]||String(t||"中译英").trim()||"中译英"}
-function typeNameToCode(t){const s=String(t||"").trim();const m={"中译英":"ce","英译中":"ec","拆分":"sp","连词成句":"od","改写":"rw","小作文":"wr"};return m[s]||s||"ce"}
-function cleanPipeField(v){return String(v||"").replace(/\r?\n/g," ").replace(/\|/g,"｜").trim()}
-function splitPipeLine(line){return String(line||"").split("|").map(x=>x.trim())}
-function renderRoundFilterBar(){const box=document.getElementById("roundFilterBar");if(!box)return;const c=statusCount();box.innerHTML=`<div class="round-filter"><button class="status-chip ${roundStatusFilter==='all'?'active':''}" onclick="roundStatusFilter='all';renderRounds()">全部 ${c.all}</button>${STATUS_OPTIONS.map(([k,l])=>`<button class="status-chip ${roundStatusFilter===k?'active':''}" onclick="roundStatusFilter='${k}';renderRounds()">${l} ${c[k]||0}</button>`).join("")}</div>`}
-function statusMatch(r){if(roundStatusFilter==="all")return true;const s=(r.status==="done"?"notion_done":r.status)||"answering";if(roundStatusFilter==="answering")return s==="answering"||s==="first_screen";if(roundStatusFilter==="pending_ai")return s==="pending_ai"||s==="ai_done";return s===roundStatusFilter}
-function renderErrorTags(q){const active=Array.isArray(q.errorTags)?q.errorTags:[];return `<div class="tag-row">${ERROR_TAGS.map(t=>`<button type="button" class="tag-btn ${active.includes(t)?'active':''}" onclick="toggleErrorTag(${currentIndex},'${t}')">${t}</button>`).join("")}</div>`}
-function renderReviewPanel(q){
-  const count=Array.isArray(q.errorTags)?q.errorTags.length:0;
-  const hasSelf=(q.selfCheck||"").trim().length>0;
-  const shouldOpen=hasSelf||count>0;
-  return `<details class="review-panel" ${shouldOpen?"open":""}>
-    <summary>
-      <span>一筛 / 自检（可选）</span>
-      <em>${count?`错因 ${count}`:"可展开"}</em>
-    </summary>
-    <div class="review-inner">
-      <div id="selfInput" class="self-input glass-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="只记一句：可能错在哪？想确认什么？" oninput="saveCurrentSoft()">${esc(q.selfCheck)}</div>
-      <details class="tag-fold" ${count?"open":""}>
-        <summary><span>Heron 自标错因</span><em>${count?tagText(q):"展开多选"}</em></summary>
-        ${renderErrorTags(q)}
-      </details>
+  box.innerHTML=`<div class="page-head home-head-compact"><div><h2>训练首页</h2><p class="sub">轻量统计 · 状态看板 · 所有入口从这里进入。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div>
+  <section class="home-float-panel">
+    <div class="home-panel-top">
+      <button class="home-metric" onclick="roundStatusFilter='all';showPage('rounds')"><b>${state.rounds.length}</b><span>总轮次</span></button>
+      <button class="home-metric" onclick="showPage('typeGroups')"><b>${totalQ}</b><span>总题数</span></button>
+      <button class="home-metric" onclick="roundStatusFilter='all';showPage('rounds')"><b>${answered}</b><span>已作答</span></button>
+      <button class="home-metric" onclick="roundStatusFilter='answering';showPage('rounds')"><b>${c.answering}</b><span>作答中</span></button>
+      <button class="home-metric" onclick="roundStatusFilter='pending_ai';showPage('rounds')"><b>${c.pending_ai}</b><span>待 AI 二筛</span></button>
+      <button class="home-metric" onclick="roundStatusFilter='notion_done';showPage('rounds')"><b>${notion}</b><span>已沉淀</span></button>
     </div>
-  </details>`;
-}
-function toggleErrorTag(i,t){saveCurrent();const r=getRound(currentRoundId);if(!r||!r.questions[i])return;const q=r.questions[i];if(!Array.isArray(q.errorTags))q.errorTags=[];const idx=q.errorTags.indexOf(t);if(idx>=0)q.errorTags.splice(idx,1);else q.errorTags.push(t);q.updatedAt=now();r.updatedAt=now();save();renderDetail()}
-function tagText(q){return Array.isArray(q.errorTags)&&q.errorTags.length?q.errorTags.join(","):""}
-function tagHtml(q){return tagText(q)?`<span class="tag-inline">${q.errorTags.map(t=>`<span class="tag-mini">${esc(t)}</span>`).join("")}</span>`:""}
-function renderTypeGroups(){const box=document.getElementById("typeGroupBox");if(!box)return;const groups={};state.rounds.forEach(r=>(r.questions||[]).forEach((q,idx)=>{const key=q.type||"中译英";(groups[key]||(groups[key]=[])).push({round:r,q,idx});}));const keys=Object.keys(groups).sort((a,b)=>groups[b].length-groups[a].length);if(!keys.length){box.innerHTML='<div class="empty">暂无题型数据。</div>';return}box.innerHTML=`<div class="type-overview-grid">${keys.slice(0,6).map(k=>`<div class="type-stat-card"><b>${groups[k].length}</b><span>${esc(k)}</span></div>`).join("")}</div><div class="type-group">${keys.map(k=>{const items=groups[k];const answered=items.filter(x=>(x.q.userAnswer||"").trim()).length;return `<details class="card"><summary><h3>${esc(k)} · ${items.length}题</h3><p class="sub">已作答 ${answered}/${items.length}</p></summary>${items.slice(0,80).map(x=>`<div class="type-question"><b>${esc(x.q.prompt)}</b><p class="small">参考：${esc(x.q.reference)}</p><p class="small">来源：${esc(x.round.title)} · 第 ${x.idx+1} 题 · ${tagHtml(x.q)||""}</p></div>`).join("")}</details>`}).join("")}</div>`}
-function renderRounds(){renderRoundFilterBar();const box=document.getElementById("roundList");if(!box)return;let arr=state.rounds.slice().filter(statusMatch);if(!state.rounds.length){box.innerHTML='<div class="empty">暂无训练轮次。点击“新建”开始。</div>';return}if(!arr.length){box.innerHTML='<div class="empty">当前筛选下没有训练轮次。</div>';return}box.innerHTML=arr.sort((a,b)=>new Date(b.createdAt||b.updatedAt||0)-new Date(a.createdAt||a.updatedAt||0)).map(r=>`<div class="card round-card" onclick="openRound('${r.id}')"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${(r.questions||[]).length} 题</span><span>已作答 ${answeredCount(r)}/${(r.questions||[]).length}</span><span>${fmtDate(r.createdAt).split(" ")[0]}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div><button class="delete round-delete-btn" onclick="event.stopPropagation();deleteRound('${r.id}')">⌫</button></div>`).join("")}
 
+    <div class="home-panel-divider"></div>
+
+    <div class="home-panel-actions">
+      <button class="home-action primary-action" onclick="showPage('rounds')">
+        <strong>训练轮次</strong><span>作答 / 状态流转</span>
+      </button>
+      <button class="home-action" onclick="showPage('newRound')">
+        <strong>新建轮次</strong><span>导入 HEQ1 出题包</span>
+      </button>
+      <button class="home-action" onclick="showPage('typeGroups')">
+        <strong>题型分组</strong><span>按类型查看结构</span>
+      </button>
+      <button class="home-action" onclick="showPage('guide')">
+        <strong>流转 / 说明</strong><span>待二筛 / 备份 / 规则</span>
+      </button>
+    </div>
+
+    <div class="home-panel-divider soft"></div>
+
+    <div class="home-panel-status">
+      ${STATUS_OPTIONS.map(([k,l])=>`<button class="status-pill" onclick="roundStatusFilter='${k}';showPage('rounds')">${l} · ${c[k]||0}</button>`).join("")}
+      <button class="status-pill" onclick="roundStatusFilter='all';showPage('rounds')">全部 · ${c.all}</button>
+    </div>
+
+    <p class="home-panel-note">点击数字、状态或入口都可进入对应页面。本地只记录状态，不验证 Notion 是否真实写入；最终判断仍由 Heron 审核。</p>
+  </section>`;
+}
 function parseHEQ1(raw){
   const lines=String(raw||"").replace(/\r\n/g,"\n").split("\n").map(x=>x.trim()).filter(Boolean);
   if(!lines.length||!/^HEQ1\b/i.test(lines[0]))return [];
@@ -2877,7 +3195,8 @@ function importBackupFile(file){
       state={rounds:parsed.rounds};
       normalizeState();
       save();
-      load();
+      initTheme();
+load();
       showPage("rounds");
       alert(`导入完成：已恢复 ${state.rounds.length} 个训练轮次。`);
     }catch(e){
