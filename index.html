@@ -2799,7 +2799,7 @@ function renderRounds(){
   }).join("");
 }
 function renderTypeGroups(){
-  const box=document.getElementById("typeGroupList");
+  const box=document.getElementById("typeGroupBox") || document.getElementById("typeGroupList");
   if(!box)return;
   const groups={};
   (state.rounds||[]).forEach(r=>(r.questions||[]).forEach(q=>{
