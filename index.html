@@ -2587,188 +2587,40 @@ main{padding-top:18px}
 }
 
 
-/* ===== Day / Night theme toggle ===== */
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  justify-self:end;
-}
-.theme-toggle{
-  border:0;
-  min-width:44px;
-  height:34px;
-  padding:0 13px;
-  border-radius:999px;
-  font-weight:800;
-  letter-spacing:.02em;
-  color:rgba(57,68,82,.68);
-  background:rgba(255,255,255,.38);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.72),
-    0 10px 22px rgba(86,110,145,.06);
-  backdrop-filter:blur(18px) saturate(145%);
-  -webkit-backdrop-filter:blur(18px) saturate(145%);
-}
-.theme-toggle:active{transform:translateY(1px) scale(.98)}
-body.theme-night{
-  --ink:#F2F3F5;
-  --sub:rgba(236,239,244,.66);
-  --sub2:rgba(236,239,244,.46);
-  --edge:rgba(255,255,255,.12);
-  --glass:rgba(20,22,26,.42);
-  --glass2:rgba(12,13,15,.54);
-  --accent:#D8DCE3;
-  --accent2:#AEB5C0;
-  --shadowSoft:
-    0 24px 70px rgba(0,0,0,.46),
-    inset 0 1px 0 rgba(255,255,255,.10);
-  background:
-    radial-gradient(circle at 12% 8%, rgba(255,255,255,.18), transparent 25%),
-    radial-gradient(circle at 82% 18%, rgba(126,136,150,.24), transparent 30%),
-    radial-gradient(circle at 42% 86%, rgba(232,235,240,.12), transparent 34%),
-    linear-gradient(135deg, #030405 0%, #101216 28%, #292D33 52%, #0A0B0D 78%, #E8EAED 145%);
-  color:var(--ink);
-}
-body.theme-night::before{
-  background:
-    linear-gradient(120deg, rgba(255,255,255,.08), transparent 22%, rgba(255,255,255,.04) 48%, transparent 68%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 7px);
-  opacity:.72;
-}
-body.theme-night .top{
-  background:
-    linear-gradient(180deg, rgba(18,20,24,.72), rgba(18,20,24,.40));
-  border-bottom-color:rgba(255,255,255,.08);
-  box-shadow:0 14px 40px rgba(0,0,0,.22);
-}
-body.theme-night .title h1,
-body.theme-night h2,
-body.theme-night h3,
-body.theme-night .question-title,
-body.theme-night label{
+/* ===== Stable repair: force readable light theme, no night overlay ===== */
+body{color:var(--ink) !important;}
+.top,.card,.home-float-panel,.round-card,.answer-card{
   color:var(--ink) !important;
 }
-body.theme-night .title p,
-body.theme-night .sub,
-body.theme-night .small,
-body.theme-night .meta,
-body.theme-night .home-panel-note,
-body.theme-night .home-compact-note,
-body.theme-night .status-manage-note,
-body.theme-night .data-note{
+.title h1,h2,h3,label,.question-title{
+  color:var(--ink) !important;
+}
+.title p,.sub,.small,.meta,.home-panel-note,.home-compact-note,.status-manage-note{
   color:var(--sub) !important;
 }
-body.theme-night .exit{
-  color:rgba(236,239,244,.70);
+.page.active{display:block !important;}
+.empty{
+  padding:24px;
+  color:var(--sub);
+  text-align:center;
+  border-radius:24px;
+  background:rgba(255,255,255,.22);
 }
-body.theme-night .theme-toggle{
-  color:rgba(8,10,12,.78);
-  background:linear-gradient(145deg, rgba(255,255,255,.80), rgba(190,197,207,.56));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.76),
-    0 14px 32px rgba(0,0,0,.34);
-}
-body.theme-night .card,
-body.theme-night .home-float-panel,
-body.theme-night .round-card,
-body.theme-night .answer-card,
-body.theme-night .home-metric,
-body.theme-night .home-action,
-body.theme-night .stat-card,
-body.theme-night .type-stat-card,
-body.theme-night .preview,
-body.theme-night input,
-body.theme-night textarea,
-body.theme-night select,
-body.theme-night .glass-editor,
-body.theme-night .reference-block,
-body.theme-night .status-pill,
-body.theme-night .status-chip,
-body.theme-night .home-entry,
-body.theme-night .qnums button,
-body.theme-night .tag-btn,
-body.theme-night .review-panel summary,
-body.theme-night .bottom-nav button{
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.025)) !important;
-  border-color:rgba(255,255,255,.10) !important;
-  color:var(--ink) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.11),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    0 18px 42px rgba(0,0,0,.22) !important;
-  backdrop-filter:blur(24px) saturate(125%) !important;
-  -webkit-backdrop-filter:blur(24px) saturate(125%) !important;
-}
-body.theme-night .home-float-panel{
-  background:
-    radial-gradient(circle at 14% 0%, rgba(255,255,255,.16), transparent 32%),
-    radial-gradient(circle at 92% 92%, rgba(255,255,255,.10), transparent 38%),
-    linear-gradient(145deg, rgba(16,18,21,.66), rgba(5,6,7,.44)) !important;
-}
-body.theme-night .home-float-panel::before{
-  background:
-    linear-gradient(115deg, rgba(255,255,255,.12), transparent 25%),
-    radial-gradient(circle at 80% 20%, rgba(255,255,255,.06), transparent 34%) !important;
-}
-body.theme-night .home-metric span,
-body.theme-night .home-action span,
-body.theme-night .status-pill,
-body.theme-night .status-chip,
-body.theme-night .question-hint summary,
-body.theme-night .review-panel summary em,
-body.theme-night .tag-fold summary,
-body.theme-night .tag-btn,
-body.theme-night .reference-block summary{
-  color:rgba(236,239,244,.60) !important;
-}
-body.theme-night .primary,
-body.theme-night .home-action.primary-action,
-body.theme-night .qnums button.active,
-body.theme-night .tag-btn.active{
-  background:
-    linear-gradient(145deg, rgba(245,247,250,.68), rgba(106,112,122,.40)) !important;
-  color:rgba(5,7,9,.86) !important;
-  border-color:rgba(255,255,255,.22) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.64),
-    0 16px 36px rgba(0,0,0,.38) !important;
-}
-body.theme-night .qnums button.answered{
-  background:rgba(255,255,255,.13) !important;
-}
-body.theme-night .glass-editor:empty:before,
-body.theme-night textarea::placeholder,
-body.theme-night input::placeholder{
-  color:rgba(236,239,244,.28) !important;
-}
-body.theme-night .badge,
-body.theme-night .reference-answer,
-body.theme-night .reference-phonetic{
-  color:var(--ink) !important;
-}
-body.theme-night .home-panel-divider{
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent) !important;
-}
-body.theme-night .logo{
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.22),
-    0 16px 36px rgba(0,0,0,.38);
-}
-@media(max-width:720px){
-  .header-actions{gap:6px}
-  .theme-toggle{
-    min-width:40px;
-    height:32px;
-    padding:0 11px;
-  }
+.delete-btn{
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  border:0;
+  background:rgba(255,255,255,.34);
+  color:rgba(40,48,58,.58);
+  font-size:20px;
 }
 
 </style>
 </head>
 <body>
-<div class="app"><div class="top"><div class="header"><div class="logo" aria-label="Heron avatar" onclick="showPage('home')"></div><div class="title" onclick="showPage('home')"><h1>Heron · 英语训练平台</h1><p>English training platform</p></div><div class="header-actions"><button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换昼夜">昼</button><button class="ghost exit" onclick="location.reload()">退出</button></div></div></div>
+<div class="app"><div class="top"><div class="header"><div class="logo" aria-label="Heron avatar" onclick="showPage('home')"></div><div class="title" onclick="showPage('home')"><h1>Heron · 英语训练平台</h1><p>English training platform</p></div><button class="ghost exit" onclick="location.reload()">退出</button></div></div>
 <main>
 <section id="home" class="page active"><div id="homeStats"></div></section>
 <section id="rounds" class="page"><div class="back" onclick="showPage('home')">← 返回首页</div><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div><h2>训练轮次</h2><p class="sub">选择一个轮次开始作答。</p></div><button class="primary" onclick="showPage('newRound')">+ 新建</button></div><div id="roundFilterBar"></div><div id="roundList"></div></section>
@@ -2805,25 +2657,6 @@ body.theme-night .logo{
 </main></div>
 <script>
 const KEY="heron_english_rounds_v04";let state={rounds:[]};let currentRoundId=null;let currentIndex=0;let currentMode="answer";let pendingQuestions=[];let pendingMeta={};let submitHint="";let roundStatusFilter="all";const ERROR_TAGS=["语序","时态","介词","冠词","be动词","主谓一致","句型骨架","单词拼写","表达不自然","未掌握","阶段可通过"];const STATUS_OPTIONS=[["answering","作答中"],["pending_ai","待 AI 二筛"],["reviewed","Heron 已审核"],["notion_done","已沉淀 Notion"]];
-
-const THEME_KEY="heron_english_theme_v01";
-function applyTheme(mode){
-  const safeMode = mode==="night" ? "night" : "day";
-  document.body.classList.toggle("theme-night", safeMode==="night");
-  const btn=document.getElementById("themeToggle");
-  if(btn)btn.textContent=safeMode==="night" ? "夜" : "昼";
-  try{localStorage.setItem(THEME_KEY,safeMode)}catch(e){}
-}
-function toggleTheme(){
-  const isNight=document.body.classList.contains("theme-night");
-  applyTheme(isNight ? "day" : "night");
-}
-function initTheme(){
-  let mode="day";
-  try{mode=localStorage.getItem(THEME_KEY)||"day"}catch(e){}
-  applyTheme(mode);
-}
-
 function looksLikeRoundState(obj){
   return obj && typeof obj==="object" && Array.isArray(obj.rounds);
 }
@@ -2941,6 +2774,54 @@ function buildHEQ1Text(r){
 function statusCount(){const m={all:state.rounds.length,answering:0,pending_ai:0,reviewed:0,notion_done:0};state.rounds.forEach(r=>{const s=(r.status==="done"?"notion_done":r.status)||"answering";if(s==="first_screen")m.answering++;else if(s==="ai_done")m.pending_ai++;else if(m[s]!=null)m[s]++;else m.answering++;});return m}
 function totalQuestionCount(){return state.rounds.reduce((n,r)=>n+(r.questions||[]).length,0)}
 function totalAnsweredCount(){return state.rounds.reduce((n,r)=>n+answeredCount(r),0)}
+
+function safeText(v){return esc(v==null?"":String(v))}
+function renderRounds(){
+  const box=document.getElementById("roundList");
+  if(!box)return;
+  const list=[...(state.rounds||[])].sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
+  const filtered=roundStatusFilter&&roundStatusFilter!=="all"?list.filter(r=>{
+    const s=(r.status==="done"?"notion_done":r.status)||"answering";
+    return s===roundStatusFilter;
+  }):list;
+  if(!filtered.length){
+    box.innerHTML='<div class="empty">暂无训练轮次。返回首页或点击“新建”开始。</div>';
+    return;
+  }
+  box.innerHTML=filtered.map(r=>{
+    const s=(r.status==="done"?"notion_done":r.status)||"answering";
+    return `<div class="card round-card" onclick="currentRoundId='${r.id}';currentIndex=0;showPage('detail');renderDetail()">
+      <div class="round-main"><h3>${safeText(r.title||"未命名训练轮次")}</h3>
+      <div class="meta"><span>${(r.questions||[]).length} 题</span><span>已作答 ${answeredCount(r)}/${(r.questions||[]).length}</span><span>${fmtDate(r.updatedAt||r.createdAt)}</span><span class="badge ${statusClass(s)}">${statusLabel(s)}</span></div>
+      <div class="small">ID：${safeText(r.id)}</div></div>
+      <button class="delete-btn" onclick="event.stopPropagation();deleteRound('${r.id}')">⌫</button>
+    </div>`;
+  }).join("");
+}
+function renderTypeGroups(){
+  const box=document.getElementById("typeGroupList");
+  if(!box)return;
+  const groups={};
+  (state.rounds||[]).forEach(r=>(r.questions||[]).forEach(q=>{
+    const k=(q.type||"未分类").trim()||"未分类";
+    (groups[k]||(groups[k]=[])).push({q,r});
+  }));
+  const keys=Object.keys(groups).sort((a,b)=>groups[b].length-groups[a].length);
+  if(!keys.length){box.innerHTML='<div class="empty">暂无题型数据。</div>';return;}
+  box.innerHTML=`<div class="type-overview-grid">${keys.slice(0,6).map(k=>`<div class="type-stat-card"><b>${groups[k].length}</b><span>${safeText(k)}</span></div>`).join("")}</div><div class="type-group">`+
+    keys.map(k=>{
+      const answered=groups[k].filter(x=>(x.q.userAnswer||"").trim()).length;
+      return `<div class="card"><h3>${safeText(k)} · ${groups[k].length}题</h3><p class="sub">已作答 ${answered}/${groups[k].length}</p></div>`;
+    }).join("")+`</div>`;
+}
+function renderPending(targetId="pendingList"){
+  const box=document.getElementById(targetId);
+  if(!box)return;
+  const arr=(state.rounds||[]).filter(r=>r.status==="pending_ai");
+  if(!arr.length){box.innerHTML='<div class="empty">暂无待 AI 二筛的训练轮次。</div>';return;}
+  box.innerHTML=arr.sort((a,b)=>new Date(b.submittedAt||b.updatedAt||0)-new Date(a.submittedAt||a.updatedAt||0)).map(r=>`<div class="card round-card" onclick="currentRoundId='${r.id}';showExport()"><div><h3>${safeText(r.title)}</h3><div class="meta"><span>${fmtDate(r.submittedAt||r.updatedAt)}</span><span>已作答 ${answeredCount(r)}/${(r.questions||[]).length}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${safeText(r.id)}</div></div></div>`).join("");
+}
+
 function renderHomeStats(){
   const box=document.getElementById("homeStats");
   if(!box)return;
@@ -3157,16 +3038,7 @@ async function copyHER1Text(){
 }
 function downloadHER1Text(){const r=getRound(currentRoundId);if(!r)return;download(`${r.id}-HER1二筛包.txt`,buildHER1Text(r),"text/plain;charset=utf-8")}
 async function copyAIText(){const t=document.getElementById("aiText").value;try{await navigator.clipboard.writeText(t);alert("已复制。")}catch(e){alert("复制失败，请手动全选复制。")}}function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}function downloadAIText(){const r=getRound(currentRoundId);download(`${r.id}-AI二筛.txt`,buildAIText(r),"text/plain;charset=utf-8")}
-function renderPending(targetId="pendingList"){
-  const arr=state.rounds.filter(r=>r.status==="pending_ai");
-  const box=document.getElementById(targetId);
-  if(!box)return;
-  if(!arr.length){
-    box.innerHTML='<div class="empty">暂无待 AI 二筛的训练轮次。</div>';
-    return;
-  }
-  box.innerHTML=arr.sort((a,b)=>new Date(b.submittedAt||b.updatedAt)-new Date(a.submittedAt||a.updatedAt)).map(r=>`<div class="card round-card" onclick="currentRoundId='${r.id}';showExport()"><div><h3>${esc(r.title)}</h3><div class="meta"><span>${fmtDate(r.submittedAt||r.updatedAt)}</span><span>已作答 ${answeredCount(r)}/${r.questions.length}</span><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></div><div class="small">ID：${esc(r.id)}</div></div></div>`).join("");
-}
+
 function backupText(){return JSON.stringify({format:"HERON_ENGLISH_TOOL_BACKUP_V05",app:"Heron English Training Platform",createdAt:now(),state},null,2)}
 function downloadBackup(){download(`Heron英语训练完整备份-${Date.now()}.json`,backupText(),"application/json;charset=utf-8")}
 async function copyBackup(){try{await navigator.clipboard.writeText(backupText());alert("JSON 完整备份已复制。若跨设备粘贴过长，推荐使用 HEB1E 备份包。")}catch(e){alert("复制失败，请下载备份。")}}
@@ -3195,8 +3067,7 @@ function importBackupFile(file){
       state={rounds:parsed.rounds};
       normalizeState();
       save();
-      initTheme();
-load();
+      load();
       showPage("rounds");
       alert(`导入完成：已恢复 ${state.rounds.length} 个训练轮次。`);
     }catch(e){
